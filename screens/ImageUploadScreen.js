@@ -124,7 +124,7 @@ export default class App extends Component {
         <Image
         key={Math.random()}
           source={photo.image}
-          resizeMode="contain"
+          resizeMode='contain'
           style={{ height: 100, width: 100, resizeMode: 'contain' }}
         />
       );
@@ -242,7 +242,7 @@ var CroppedUri = '';
             offset:{x:0,y:0}, 
             size:{width:data.width, height:data.height},
           displaySize:{width:250, height:250}, //THESE 2 ARE OPTIONAL. 
-          resizeMode:'contain', 
+          resizeMode:'cover', 
         }
         // Crop the image. 
         try{
@@ -470,7 +470,8 @@ style={{color:'#000'}}
         {/* Upload edildiğindeki yükleme ekranı (popup)*/
             
               this.state.isUploadButton && 
-            <View style={{width:Dimensions.get('screen').width, height:Dimensions.get('screen').height,position:'absolute',bottom:0,left:0}}>
+             
+                <View style={{zIndex:9999999999999,width:Dimensions.get('screen').width, height:Dimensions.get('screen').height,position:'absolute',bottom:0,left:0}}>
              
                     <View style={styles.containerblock}>
                    
@@ -478,8 +479,8 @@ style={{color:'#000'}}
                     </View>
 
 
-                    <View style={{backgroundColor:'#444',width:80 + '%',height:350,position: 'absolute',zIndex:9999999999999,alignSelf:'center',top:(Dimensions.get('screen').height/2) - (350/2) - 50}}>
-                    <Image source={{uri:this.state.UploadingNowImgUri}} style={{width:100 + '%', height:100+ '%',zIndex:9999999999999}}/>
+                    <View style={{backgroundColor:'#444',width:80 + '%',height:350,position: 'absolute',zIndex:99999,alignSelf:'center',top:(Dimensions.get('screen').height/2) - (350/2) - 50}}>
+                    <Image source={{uri:this.state.UploadingNowImgUri}} style={{width:100 + '%', height:100+ '%'}}/>
                     <View style={{position:'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
                     <ProgressCircle
             percent={this.state.UploadPercent}
@@ -517,7 +518,8 @@ style={{color:'#000'}}
                             </Ripple>
                     </View>
               </View>
-            }
+             
+           }
        
 
 

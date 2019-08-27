@@ -28,7 +28,7 @@ import Constants from 'expo-constants';
 import firebase from '../components/Firebase';
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
 import RNPickerSelect from 'react-native-picker-select';
-import { Button } from 'react-native-elements';
+import { Button, Icon } from 'react-native-elements';
 import { NavigationActions } from 'react-navigation';
 import { ScrollView } from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
@@ -278,6 +278,11 @@ _getChannelPhotos = () =>
    <ImageViewer
             imageUrls={images}
             index={this.state.currentImageIndex}
+            enablePreload={true}
+            saveToLocalByLongPress={true}
+            loadingRender={()=>{return <ActivityIndicator size={60}></ActivityIndicator>}}
+            onSave={()=>alert('Image Saved to Gallery')}
+            
             onSwipeDown={() => {
               this.setState({isModalOpened:false})
             }}
