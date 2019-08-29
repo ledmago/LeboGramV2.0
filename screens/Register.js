@@ -213,7 +213,7 @@ _bootstrapAsync = async () => {
 
                         dbh.collection("usernameList").doc(self.state.username).set({
                           email:self.state.email,
-                          PPUri : 'https://firebasestorage.googleapis.com/v0/b/lebogram-4312a.appspot.com/o/ppimage.png?alt=media&token=2a955ee5-684f-47f7-be86-055dcb51b885',
+                          PPUri : '',
                         })
                         .then(function(){
                                 dbh.collection("users").doc(thisUser.uid).set({
@@ -221,7 +221,7 @@ _bootstrapAsync = async () => {
                                   password:self.state.password,
                                   email:self.state.email,
                                   name:self.state.name,
-                                  profilephoto:'null',
+                                  profilephoto:'https://firebasestorage.googleapis.com/v0/b/lebogram-4312a.appspot.com/o/ppimage.png?alt=media&token=2a955ee5-684f-47f7-be86-055dcb51b885',
                                   newUser:true,
 
                                 }).then(function(){

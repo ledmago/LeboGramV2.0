@@ -11,6 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
  import Swipeable from 'react-native-gesture-handler/Swipeable';
  import Ripple from 'react-native-material-ripple';
+ import { Badge } from 'react-native-elements';
 import { GestureHandler } from 'expo';
 
 const styles = StyleSheet.create({
@@ -175,6 +176,8 @@ const ListItem = ({id,username,displayname, desc, PPUri, onSwipeFromLeft, onRigh
                 <Text style={styles.kisiListItemTextSubTitle}>{desc}</Text>
             </View>
             <View style={styles.kisiListItemArrow}><Ionicons name={"ios-arrow-forward"} size={25} color={"#222"}/></View>
+            <View style={{backgroundColor:'#55c319',height:25,width:25,borderRadius:25/2, position: 'absolute', alignSelf:'center',alignItems:'center',justifyContent:'center',right: 20 }}><Text style={{textAlign:'center', color:'#FFF'}}>9</Text></View>
+                                            
             </View>
           </View>
           </Ripple>

@@ -30,11 +30,15 @@ class LoginScreen extends React.Component {
 
   async componentDidMount(){
     const dbh = firebase.firestore();
-    const  usersRef =  await dbh.collection('usernameList').doc(global.tempUsername)
+
+    const  usersRef =  await dbh.collection('users').where('username', '==', global.tempUsername)
    usersRef.get()
    .then((docSnapshot) => {
-    
-       this.setState({email:docSnapshot.data().email, PPUri : docSnapshot.data().PPUri + '&ver=' + Math.random()});
+    docSnapshot.forEach((docSnapshot2)=> {
+      
+      this.setState({email:docSnapshot2.data().email, PPUri : docSnapshot2.data().profilephoto + '&ver=' + Math.random()});
+    })
+      
     
    });
 

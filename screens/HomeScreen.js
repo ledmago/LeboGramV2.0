@@ -226,15 +226,12 @@ getPermissionAsync = async () => {
                                               
                                                   var username = docSnapshot2.data().username;
                                                   
-                                                      // Kanalın PP Resmi (Userin)
-                                                      const  usernameListRef =  dbh_firestore.collection('usernameList').doc(username)
-                                                      usernameListRef.get()
-                                                        .then((docSnapshot3) => {
-                                                          PPUri= docSnapshot3.data().PPUri;
+                                                  
+                                                          PPUri= docSnapshot2.data().profilephoto;
   
                                                             finalSonuc(kanalid,displaynameRef,desc,PPUri,last_time,index);
-                                                          
-                                                        })
+                                                        
+                                                        
   
   
                                         })

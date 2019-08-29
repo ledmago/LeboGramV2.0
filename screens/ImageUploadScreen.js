@@ -205,6 +205,7 @@ export default class App extends Component {
 
   ResimGonderFirebase = async () =>{
    
+  
       if(this.state.selectedCount > 0)
       {
 
@@ -218,122 +219,125 @@ export default class App extends Component {
         
           this.state.photos.map((data)=>{
          
-            if(data.node.isSelect == true)
-            {
-             
-              selectedItems.push(data.node.image);
-            
-            }
-        });
-
-       
-       selectedItems.map(async (data,index)=>{
-      
-        
-          var self = this;
-         // alert('gir' + index)
-
-          // Resim Boyutu Küçültme 
-
-
-var CroppedUri = '';
-
-          cropData = {
-            offset:{x:0,y:0}, 
-            size:{width:data.width, height:data.height},
-          displaySize:{width:250, height:250}, //THESE 2 ARE OPTIONAL. 
-          resizeMode:'cover', 
-        }
-        // Crop the image. 
-        try{
-            await ImageEditor.cropImage(data.uri, 
-                cropData, async(successURI) => { 
-                  CroppedUri = successURI
-                                 
-
-
-          const response = await fetch(CroppedUri).catch((error)=>alert(error));
-          const blob = await response.blob();
-          const ImageName = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); // Random Name
-         
-          var ref = firebase.storage().ref().child('sendImages/' + this.state.kanalid + '/' + ImageName + '/small');
-         
-          ref.put(blob).then(async function(){
-            
-            self.setState({UploadingNowImgUri:data.uri}); // Ekranda Resmi Göster
-            const responseBig = await fetch(data.uri);
-            const blobBig = await responseBig.blob();
-            var  refBig = await firebase.storage().ref().child('sendImages/' + self.state.kanalid + '/' + ImageName + '/big').put(blobBig).on('state_changed',
-           async function progress(snapshot) {
-         
-              this.percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              self.setState({UploadPercent:this.percentage})
-             
-
-              if(this.percentage >99)
+              if(data.node.isSelect == true)
               {
               
-                   // Yüklendini belirtmek için
-              self.increaseProgressbar();
-             
-
-
-
-              var db = firebase.database();
-              var date = new Date();
-              
-            var ref = await db.ref('chatMessages/'+ self.state.kanalid).push({
-              timestamp:date.getTime(),
-              type:'photo',
-              message:'none',
-              senderid:self.state.userToken,
-              photoName:ImageName,
-            }).then(()=>{     
-           
-         
-            });
+                selectedItems.push(data.node.image);
               
               }
+        });
 
-
-
-
-
-
-            })
-            
-           
-          
-          }).catch(function(error){alert('hata')});
-                
-                
-                }, 
-                (error) =>{console.log('cropImage,',error)}
-            )
-        }
-        catch(error){
-           alert(error)
-        }
-
-
-       /*   
-          const smallImage = await ImageManipulator.manipulateAsync(
-            data.uri,
-            [{ resize: {width:250} }],
-          { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
-        ).catch((error)=>alert(error + '    -     ' + JSON.parse(data)));
-        // -------
-   */
-
-
-
-          
-      });
-
+      
+               selectedItems.map(async (data,index)=>{
+      
         
+                      var self = this;
+                    // alert('gir' + index)
+
+                      // Resim Boyutu Küçültme 
+
+
+                      var CroppedUri = '';
+
+                      cropData = {
+                        offset:{x:0,y:0}, 
+                        size:{width:data.width, height:data.height},
+                      displaySize:{width:250, height:250}, //THESE 2 ARE OPTIONAL. 
+                      resizeMode:'cover', 
+                    }
+                    // Crop the image. 
+                    try{
+                        await ImageEditor.cropImage(data.uri, 
+                            cropData, async(successURI) => { 
+                              CroppedUri = successURI
+                                            
+
+
+                      const response = await fetch(CroppedUri).catch((error)=>alert(error));
+                      const blob = await response.blob();
+                      const ImageName = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); // Random Name
+                    
+                      var ref = firebase.storage().ref().child('sendImages/' + this.state.kanalid + '/' + ImageName + '/small');
+                    
+                      ref.put(blob).then(async function(){
+                        
+                        self.setState({UploadingNowImgUri:data.uri}); // Ekranda Resmi Göster
+                        const responseBig = await fetch(data.uri);
+                        const blobBig = await responseBig.blob();
+                        var  refBig = await firebase.storage().ref().child('sendImages/' + self.state.kanalid + '/' + ImageName + '/big').put(blobBig).on('state_changed',
+                      async function progress(snapshot) {
+                    
+                          this.percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                          self.setState({UploadPercent:this.percentage})
+                        
+
+                          if(this.percentage >99)
+                          {
+                          
+                              // Yüklendini belirtmek için
+                          self.increaseProgressbar();
+                        
+
+
+
+                          var db = firebase.database();
+                          var date = new Date();
+                          
+                        var ref = await db.ref('chatMessages/'+ self.state.kanalid).push({
+                          timestamp:date.getTime(),
+                          type:'photo',
+                          message:'none',
+                          senderid:self.state.userToken,
+                          photoName:ImageName,
+                        }).then(()=>{     
+                      
+                    
+                        });
+                          
+                          }
+
+
+
+
+
+
+                        })
+                        
+                      
+                      
+                      }).catch(function(error){alert('hata')});
+                            
+                            
+                            }, 
+                            (error) =>{console.log('cropImage,',error)}
+                        )
+                    }
+                    catch(error){
+                      alert(error)
+                    }
+
+
+                      /*   
+                          const smallImage = await ImageManipulator.manipulateAsync(
+                            data.uri,
+                            [{ resize: {width:250} }],
+                          { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
+                        ).catch((error)=>alert(error + '    -     ' + JSON.parse(data)));
+                        // -------
+                  */
+
+
+
+          
+              });
+
+            
       }
      
     }
+
+
+
   }
 
 

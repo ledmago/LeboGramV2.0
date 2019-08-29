@@ -90,7 +90,7 @@ class LinksScreen extends React.Component {
             [{ resize: {width:250} }],
           { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
         );
-        alert(this.state.imageUri)
+       
 
       this.uploadImage(manipResult.uri); /*   this.uploadImage(uri); -- Tam Boyutku Yüklüyor */
       this.setState({imageUri:manipResult,PictureLoading:true});
@@ -117,8 +117,8 @@ class LinksScreen extends React.Component {
      const dbh = firebase.firestore();
 
 
-    dbh.collection("usernameList").doc(global.userInfo.username).update({
-      PPUri:global.userInfo.profilePhotoUri + '&ver=' + Math.random(),
+    dbh.collection("users").doc(global.userInfo.userUid).update({
+      profilephoto:global.userInfo.profilePhotoUri + '&ver=' + Math.random(),
     }).catch(function(error){console.log(error)})
 
 

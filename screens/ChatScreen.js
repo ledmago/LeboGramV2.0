@@ -6,7 +6,6 @@ import {
   View,
   FlatList,
   ActivityIndicator,
-  Image,
   CameraRoll,
   TouchableOpacity,
   Platform,
@@ -32,17 +31,8 @@ import { Button, Icon } from 'react-native-elements';
 import { NavigationActions } from 'react-navigation';
 import { ScrollView } from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
-let images = [{
-    // Simplest usage.
-    url: 'https://avatars2.githubusercontent.com/u/7970947?v=3&s=460',
- 
-    // width: number
-    // height: number
-    // Optional, if you know the image size, you can set the optimization performance
- 
-    // You can pass props to <Image />.
-    freeHeight: true
-},]
+import { Image } from 'react-native-elements';
+let images = []
 
 
 const { width } = Dimensions.get("window");
@@ -206,6 +196,7 @@ _getChannelPhotos = () =>
     var self = this;
    
     ref.on("value", (snapshot) => {
+        images = [];
         if(snapshot.exists())
         {
 
@@ -447,7 +438,7 @@ _getChannelPhotos = () =>
                                       extraData={this.state}
                                       renderItem={({ item,index }) => (
                                         <View style={{ flex: 1, flexDirection: 'column', margin: 1 }}>
-                                            <TouchableOpacity onPress={() => {this.openModal(index)}}><Image style={styles.imageThumbnail} source={{ uri: item.photoName }} /></TouchableOpacity>
+                                            <TouchableOpacity onPress={() => {this.openModal(index)}}><Image style={styles.imageThumbnail}  PlaceholderContent={<ActivityIndicator color='#777' size={25}/>} source={{ uri: item.photoName }} /></TouchableOpacity>
                                         </View>
                                       )}
                                       //Setting the number of column

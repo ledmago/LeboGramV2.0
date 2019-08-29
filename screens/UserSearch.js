@@ -73,7 +73,7 @@ async componentDidMount()
                   {
                    
                     var indexNumber = 0;
-                   this._finalSonuc(docSnapshot.data().name,gelenUserId,indexNumber,1) // 1 Yazdık Çünkü Sadece 1 kişiyi bulacak
+                   this._finalSonuc(docSnapshot.data().name,docSnapshot.data().profilephoto,gelenUserId,indexNumber,1) // 1 Yazdık Çünkü Sadece 1 kişiyi bulacak
                   }
                       })
                   }
@@ -86,16 +86,15 @@ async componentDidMount()
 
 }
 
-  _finalSonuc = (displaynameRef,uid,index,size) =>
+  _finalSonuc = (displaynameRef,PPUri,uid,index,size) =>
   {
-
+    if(PPUri == null | PPUri == ''){ PPUri = 'https://firebasestorage.googleapis.com/v0/b/lebogram-4312a.appspot.com/o/profilephoto%2F' + uid + '%2Fsmall?alt=media';}
       this.setState({isUserNotFound:false})
             // console.log('-----' + kanalid + ' | ' + displaynameRef + ' | ' + desc + ' | ' + PPUri + ' ----- ' );
           // { id: 'AKSJDHASUIDHASJ',displayname:'Fırat Doğan', desc:'2015 Yılında Katıldı', PPUri: 'https://www.belbim.istanbul/FileManager/Image/Belbim/Person/FatihOzdemir.jpg'  },
         
         var gelenArray = this.state.tempItemQuota;
-          var PPUri = 'https://firebasestorage.googleapis.com/v0/b/lebogram-4312a.appspot.com/o/profilephoto%2F' + uid + '%2Fsmall?alt=media'
-        var pushItem = {id:uid,displayname:displaynameRef,desc:'Kullanıcı',PPUri:PPUri,last_time:''} // Bura Yukardaki ile Aynı Olcaak
+          var pushItem = {id:uid,displayname:displaynameRef,desc:'Kullanıcı',PPUri:PPUri,last_time:''} // Bura Yukardaki ile Aynı Olcaak
         gelenArray.push(pushItem)
           
         this.setState({tempItemQuota:gelenArray,isEverythingReady:true});
@@ -132,7 +131,7 @@ async componentDidMount()
                         docSnapshot.forEach((doc) => {
                           
                            
-                            this._finalSonuc(doc.data().name,doc.id,indexNumber,docSnapshot.size)
+                            this._finalSonuc(doc.data().name,doc.data().profilephoto,doc.id,indexNumber,docSnapshot.size)
                             indexNumber++;
                           })
                       }
@@ -146,7 +145,7 @@ async componentDidMount()
                             docSnapshot.forEach((doc) => {
                               
                              
-                                this._finalSonuc(doc.data().name,doc.id,indexNumber,docSnapshot.size)
+                                this._finalSonuc(doc.data().name,doc.data().profilephoto,doc.id,indexNumber,docSnapshot.size)
                                 indexNumber++;
                               })
                           }
@@ -302,7 +301,20 @@ async componentDidMount()
                                    
                                   if(docSnapshot.size > 0 && isGroup == false )
                                   {
-                                   alert('Zaten Mevcut Kanal Var')
+                                   docSnapshot.forEach((snap)=>{
+                                     // Kanal Zaten Varsa Oraya Yönlendir.
+                                     var Karsiuserid = global.userInfo.userUid == Object.keys(snap.data().users)[0] ? Object.keys(snap.data().users)[1] : Object.keys(snap.data().users)[0];
+                                     
+                                    var userInfoCek = firebase.firestore().collection('users').doc(Karsiuserid);
+                                    userInfoCek.get().then((userData)=>{
+                                      
+                                      // Buraya PPuri ekle databaseye
+                                      this.props.navigation.navigate('ChatScreen',{kanalid:snap.id,displayname:userData.data().name,desc:snap.data().desc,PPUri:userData.data().profilephoto})
+                                    })
+                                    
+                                   // this.props.navigation.navigate('');
+                                  
+                                  });
                                    
                                   }
                                   else{
