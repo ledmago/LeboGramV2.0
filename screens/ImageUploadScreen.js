@@ -188,12 +188,30 @@ export default class App extends Component {
     
   increaseProgressbar = () =>
   {
+    var self= this;
     var select = this.state.selectedCountUploaded + 1;
     this.setState({selectedCountUploaded:select})
    if(this.state.selectedCountUploaded == this.state.selectedCount)
    {
    
     this.setState({progress:100})
+      // uNReadMessagesi Arttır
+      firebase.firestore().collection('channels').doc(self.state.kanalid).get().then((datasnapShot)=>
+      {
+          var Dataarray = Object.keys(datasnapShot.data().users);
+          Dataarray.map((data)=>{
+            if(data != global.userInfo.userUid) // Kendi Id si değilse diğerlerinin okunmamış mesaj sayısını bir arttır
+            {
+              var gelenUserData = firebase.database().ref('channelConnections').child(data).child('channels').child(self.state.kanalid).once('value',(gelenSnapshot)=>{
+                  var arttir = gelenSnapshot.val()['unReadMessage'] + self.state.selectedCount;
+                  firebase.database().ref('channelConnections').child(data).child('channels').child(self.state.kanalid).update({unReadMessage:arttir});
+
+              })
+            }
+
+          });
+
+      });
    }
    else{
   
@@ -297,23 +315,7 @@ export default class App extends Component {
 
                         }).then(()=>{     
                             
-                          // uNReadMessagesi Arttır
-                          firebase.firestore().collection('channels').doc(self.state.kanalid).get().then((datasnapShot)=>
-                          {
-                              var Dataarray = Object.keys(datasnapShot.data().users);
-                              Dataarray.map((data)=>{
-                                if(data != global.userInfo.userUid) // Kendi Id si değilse diğerlerinin okunmamış mesaj sayısını bir arttır
-                                {
-                                  var gelenUserData = firebase.database().ref('channelConnections').child(data).child('channels').child(self.state.kanalid).once('value',(gelenSnapshot)=>{
-                                      var arttir = gelenSnapshot.val()['unReadMessage'] + self.state.selectedCount;
-                                      firebase.database().ref('channelConnections').child(data).child('channels').child(self.state.kanalid).set({unReadMessage:arttir});
-
-                                  })
-                                }
-
-                              });
-
-                          });
+                        
 
                     
                         });
