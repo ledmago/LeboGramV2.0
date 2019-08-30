@@ -193,7 +193,8 @@ _getChannelPhotos = () =>
     images = [];
     this._GetList()
   var db = firebase.database();
-    var ref = db.ref('chatMessages/' + this.state.kanalid);
+    var ref = db.ref('chatMessages/' + this.state.kanalid)
+    .orderByChild('timestamp')
     var self = this;
    
     ref.on("value", (snapshot) => {
@@ -239,10 +240,10 @@ _getChannelPhotos = () =>
             tempArray.push({message:message,photoName:urlForSize,senderid:senderid,timestamp:timestamp,type:type,readed:readed});
          
                 
-            self.setState({Posts:tempArray});
+          
             if(son_item == index && index >= 0)
             {
-             
+                self.setState({Posts:tempArray.reverse()});
                 self._ListSave();
             }
          
