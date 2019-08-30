@@ -135,6 +135,18 @@ _GetList = async() =>
     });
 
 
+
+
+   /* firebase.database().ref('chatMessages').child(this.state.kanalid).once('value',(snapshot)=>{
+        
+       
+        Object.keys(snapshot.val()).map((data)=>{
+            alert(snapshot.val()[data].readed)
+
+
+        })
+
+    })*/
   }
      
     
@@ -217,7 +229,7 @@ _getChannelPhotos = () =>
            
             var photoName = firat.photoName;
             var senderid = firat.senderid;
-     
+            var readed = firat.readed;
             var timestamp = firat.timestamp;
             var type = firat.type;
             
@@ -237,8 +249,9 @@ _getChannelPhotos = () =>
             images.push({url: urlForBigger,freeHeight: true})
               var tempArray = self.state.Posts;
               
-            tempArray.push({message:message,photoName:urlForSize,senderid:senderid,timestamp:timestamp,type:type});
+            tempArray.push({message:message,photoName:urlForSize,senderid:senderid,timestamp:timestamp,type:type,readed:readed});
          
+                
             self.setState({Posts:tempArray});
             if(son_item == index && index >= 0)
             {
@@ -442,8 +455,8 @@ _getChannelPhotos = () =>
                                       data={this.state.Posts}
                                       extraData={this.state}
                                       renderItem={({ item,index }) => (
-                                        <View style={{ flex: 1, flexDirection: 'column', margin: 1 }}>
-                                            <TouchableOpacity onPress={() => {this.openModal(index)}}><Image style={styles.imageThumbnail}  PlaceholderContent={<ActivityIndicator color='#777' size={25}/>} source={{ uri: item.photoName }} /></TouchableOpacity>
+                                        <View style={{ flex: 1, flexDirection: 'column', margin: 1}}>
+                                            <TouchableOpacity onPress={() => {this.openModal(index)}}><Image style={styles.imageThumbnail}   source={{ uri: item.photoName }} /></TouchableOpacity>
                                         </View>
                                       )}
                                       //Setting the number of column

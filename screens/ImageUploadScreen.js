@@ -296,7 +296,7 @@ export default class App extends Component {
                           photoName:ImageName,
 
                         }).then(()=>{     
-
+                            
                           // uNReadMessagesi Arttır
                           firebase.firestore().collection('channels').doc(self.state.kanalid).get().then((datasnapShot)=>
                           {
