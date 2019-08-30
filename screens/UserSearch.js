@@ -336,30 +336,11 @@ async componentDidMount()
                                           channelCreateRef.then((ref)=>{
                                            
                                               var kanalid = ref.id;
-                                              var GetDataRef = firebase.database().ref('channelConnections').child(global.userInfo.userUid);
-                                              var datas = null;
-                                              GetDataRef.on('value',(snapshot)=>{
-                                                if(datas == null)
-                                                {
-                                                      if(snapshot.exists())
-                                                      {
-                                                        datas = snapshot.val().channels;
-                                                        if(snapshot.val().channels != '')
-                                                        {
-                                                          datas += ','
-                                                        }
-                                                        datas += kanalid
-                                                        firebase.database().ref('channelConnections').child(global.userInfo.userUid).set({channels:datas})
-                                                        firebase.database().ref('channelConnections').child(item.id).set({channels:datas})
-                                                        return;
+                                             
+                                              firebase.database().ref('channelConnections').child(global.userInfo.userUid).child('channels').child(kanalid).set({last_time:timestamp,unReadMessage:0})
+                                              firebase.database().ref('channelConnections').child(item.id).child('channels').child(kanalid).set({last_time:timestamp,unReadMessage:0})
 
-                                                      }
-                                                }
-                                                else{
-                                                  return
-                                                }
-                                                
-                                              })
+
                                               
 
 

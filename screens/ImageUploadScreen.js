@@ -86,6 +86,10 @@ export default class App extends Component {
     }
   }
   async componentDidMount() {
+
+   
+
+
         this.props.navigation.setParams({ ResimGonderFirebaseNavigation: this.ResimGonderFirebase});
     this.getPermissionAsync();
         this._getPhotosAsync().catch(error => {
@@ -285,12 +289,32 @@ export default class App extends Component {
                           
                         var ref = await db.ref('chatMessages/'+ self.state.kanalid).push({
                           timestamp:date.getTime(),
+                          readed:false,
                           type:'photo',
                           message:'none',
                           senderid:self.state.userToken,
                           photoName:ImageName,
+
                         }).then(()=>{     
-                      
+
+                          // uNReadMessagesi Arttır
+                          firebase.firestore().collection('channels').doc(self.state.kanalid).get().then((datasnapShot)=>
+                          {
+                              var Dataarray = Object.keys(datasnapShot.data().users);
+                              Dataarray.map((data)=>{
+                                if(data != global.userInfo.userUid) // Kendi Id si değilse diğerlerinin okunmamış mesaj sayısını bir arttır
+                                {
+                                  var gelenUserData = firebase.database().ref('channelConnections').child(data).child('channels').child(self.state.kanalid).once('value',(gelenSnapshot)=>{
+                                      var arttir = gelenSnapshot.val()['unReadMessage'] + self.state.selectedCount;
+                                      firebase.database().ref('channelConnections').child(data).child('channels').child(self.state.kanalid).set({unReadMessage:arttir});
+
+                                  })
+                                }
+
+                              });
+
+                          });
+
                     
                         });
                           

@@ -121,6 +121,8 @@ _GetList = async() =>
 
  // ---------------------------- 
   componentDidMount() {
+
+    firebase.database().ref('channelConnections').child(global.userInfo.userUid).child('channels').child(this.state.kanalid).set({unReadMessage:0});
     this._getChannelPhotos();
 
     this.props.navigation.setParams({NavigationTitleDisplayName:this.state.displayname});
@@ -246,6 +248,9 @@ _getChannelPhotos = () =>
          
         });
 
+    }
+    else{
+        self.setState({Posts:[]});
     }
     });
 

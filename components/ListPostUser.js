@@ -152,7 +152,7 @@ const RightActions = ({ Itemid,progress, dragX, onPress }) => {
   );
 };
 
-const ListItem = ({id,username,displayname, desc, PPUri, onSwipeFromLeft, onRightPress,navigate }) => (
+const ListItem = ({id,username,displayname, desc, PPUri,notReadedMessage, onSwipeFromLeft, onRightPress,navigate }) => (
 
   <Swipeable
     renderLeftActions={LeftActions}
@@ -176,8 +176,7 @@ const ListItem = ({id,username,displayname, desc, PPUri, onSwipeFromLeft, onRigh
                 <Text style={styles.kisiListItemTextSubTitle}>{desc}</Text>
             </View>
             <View style={styles.kisiListItemArrow}><Ionicons name={"ios-arrow-forward"} size={25} color={"#222"}/></View>
-            <View style={{backgroundColor:'#55c319',height:25,width:25,borderRadius:25/2, position: 'absolute', alignSelf:'center',alignItems:'center',justifyContent:'center',right: 20 }}><Text style={{textAlign:'center', color:'#FFF'}}>9</Text></View>
-                                            
+          {notReadedMessage > 0 &&  <View style={{backgroundColor:'#55c319',height:25,width:25,borderRadius:25/2, position: 'absolute', alignSelf:'center',alignItems:'center',justifyContent:'center',right: 20 }}><Text style={{textAlign:'center', color:'#FFF'}}>{notReadedMessage}</Text></View>}          
             </View>
           </View>
           </Ripple>

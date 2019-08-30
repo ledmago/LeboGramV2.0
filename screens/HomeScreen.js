@@ -148,13 +148,16 @@ getPermissionAsync = async () => {
   // Load Channel List
   async componentDidMount(){
   
+
+
+
     this.getPermissionAsync();
     LoadChannelList = async ()=> {
       this._getItemQuota();
         var db = firebase.database();
         const userToken = await AsyncStorage.getItem('userToken');
         // Kullanıcının Konuşma Kanallarını Çek
-        var ref = db.ref('channelConnections/' + userToken);
+        var ref = db.ref('channelConnections/' + userToken).child('channels');
         var self = this;
         
      
@@ -162,9 +165,11 @@ getPermissionAsync = async () => {
             if(snapshot.exists()) {     // Kulanıcı Adı Var mı ? (Real Time Database)
 
                   this.setState({tempItemQuota:[]});
-                    var data = snapshot.val().channels;
-              
-                    if(data == ''){ // Hiç Konuşması Yok İse
+                    var data = Object.keys(snapshot.val())
+                    
+                    
+                  
+                    if(data.length == 0){ // Hiç Konuşması Yok İse
                   
                       self.setState({isKonusmaYok:true,isEverythingReady:true})
                       self._saveItemQuota(true);
@@ -176,7 +181,7 @@ getPermissionAsync = async () => {
                     else{
                        
                       self.setState({isKonusmaYok:false})
-                      channelArray = data.split(",");
+                      channelArray = data;
                       var channelSize = channelArray.length
                      
                      
@@ -184,12 +189,11 @@ getPermissionAsync = async () => {
                       channelArray.map((kanalid,index)=>
                       {
                       
-                      
-                  
+                        var notReadedMessage = snapshot.val()[kanalid]['unReadMessage'];
                       
                         var desc ='';
                         var PPUri = '';
-                        var last_time = '';
+                        var last_time = snapshot.val()[kanalid]['last_time'];
                         var isGroup = '';
                         var userArray = [];
                         var displaynameRef = '';
@@ -200,7 +204,6 @@ getPermissionAsync = async () => {
                       .then((docSnapshot) => {
                         desc = docSnapshot.data().desc;
                         PPUri = '';
-                        last_time = docSnapshot.data().last_time;
                         isGroup = docSnapshot.data().isGroup;
                         userArray = docSnapshot.data().users
                         userArray = Object.keys(userArray);
@@ -220,17 +223,23 @@ getPermissionAsync = async () => {
                                         const  UserRef2 =  firebase.firestore().collection('users').doc(karsiUserId)
                                       
                                         UserRef2.get()
-                                        .then((docSnapshot2) => {
+                                        .then(async (docSnapshot2) => {
                                         
+                                                
+                                            
                                                       displaynameRef = docSnapshot2.data().name
                                               
-                                                  var username = docSnapshot2.data().username;
-                                                  
-                                                  
-                                                          PPUri= docSnapshot2.data().profilephoto;
-  
-                                                            finalSonuc(kanalid,displaynameRef,desc,PPUri,last_time,index);
-                                                        
+                                                      var username = docSnapshot2.data().username;
+                                                      
+                                                      
+                                                              PPUri= docSnapshot2.data().profilephoto;
+      
+                                                                finalSonuc(kanalid,displaynameRef,desc,PPUri,last_time,index,notReadedMessage);
+                                                             
+                                                            
+                                                   
+
+                                                   
                                                         
   
   
@@ -241,7 +250,7 @@ getPermissionAsync = async () => {
                                   else{
                                   displaynameRef = docSnapshot.data().displayname;
                                     PPUri = docSnapshot.data().PPUri;
-                                    finalSonuc(kanalid,displaynameRef,desc,PPUri,last_time,index)
+                                    finalSonuc(kanalid,displaynameRef,desc,PPUri,last_time,index,notReadedMessage)
                                   }
                           
   
@@ -249,7 +258,7 @@ getPermissionAsync = async () => {
                     
                       });
   
-                      function finalSonuc(kanalid,displaynameRef,desc,PPUri,last_time,index)
+                      function finalSonuc(kanalid,displaynameRef,desc,PPUri,last_time,index,notReadedMessage)
                       {
                         
                      
@@ -257,7 +266,7 @@ getPermissionAsync = async () => {
                         // { id: 'AKSJDHASUIDHASJ',displayname:'Fırat Doğan', desc:'2015 Yılında Katıldı', PPUri: 'https://www.belbim.istanbul/FileManager/Image/Belbim/Person/FatihOzdemir.jpg'  },
                       
                       var gelenArray = self.state.tempItemQuota;
-                      var pushItem = {id:kanalid,displayname:displaynameRef,desc:desc,PPUri:PPUri,last_time:last_time} // Bura Yukardaki ile Aynı Olcaak
+                      var pushItem = {id:kanalid,displayname:displaynameRef,desc:desc,PPUri:PPUri,last_time:last_time,notReadedMessage:notReadedMessage} // Bura Yukardaki ile Aynı Olcaak
                       gelenArray.push(pushItem)
                         
                         self.setState({tempItemQuota:gelenArray,isEverythingReady:true});
