@@ -122,7 +122,7 @@ _GetList = async() =>
  // ---------------------------- 
   componentDidMount() {
 
-    firebase.database().ref('channelConnections').child(global.userInfo.userUid).child('channels').child(this.state.kanalid).set({unReadMessage:0});
+    firebase.database().ref('channelConnections').child(global.userInfo.userUid).child('channels').child(this.state.kanalid).update({unReadMessage:0});
     this._getChannelPhotos();
 
     this.props.navigation.setParams({NavigationTitleDisplayName:this.state.displayname});
@@ -134,19 +134,6 @@ _GetList = async() =>
       dataSource: items,
     });
 
-
-
-
-   /* firebase.database().ref('chatMessages').child(this.state.kanalid).once('value',(snapshot)=>{
-        
-       
-        Object.keys(snapshot.val()).map((data)=>{
-            alert(snapshot.val()[data].readed)
-
-
-        })
-
-    })*/
   }
      
     
