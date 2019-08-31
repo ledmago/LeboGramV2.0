@@ -337,12 +337,12 @@ async componentDidMount()
                                            
                                               var kanalid = ref.id;
                                              
-                                              firebase.database().ref('channelConnections').child(global.userInfo.userUid).child('channels').child(kanalid).set({last_time:timestamp,unReadMessage:0})
-                                              firebase.database().ref('channelConnections').child(item.id).child('channels').child(kanalid).set({last_time:timestamp,unReadMessage:0})
+                                              firebase.database().ref('channelConnections').child(global.userInfo.userUid).child('channels').child(kanalid).set({last_time:timestamp,unReadMessage:0,onay:true})
+                                              firebase.database().ref('channelConnections').child(item.id).child('channels').child(kanalid).set({last_time:timestamp,unReadMessage:0,onay:false})
 
 
+                                              this.props.navigation.navigate('ChatScreen',{kanalid:kanalid,displayname:item.displayname,desc:item.desc,PPUri:item.PPUri})
                                               
-
 
                                             
 

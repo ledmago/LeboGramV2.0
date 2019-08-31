@@ -157,7 +157,7 @@ getPermissionAsync = async () => {
         var db = firebase.database();
         const userToken = await AsyncStorage.getItem('userToken');
         // Kullanıcının Konuşma Kanallarını Çek
-        var ref = db.ref('channelConnections/' + userToken).child('channels');
+        var ref = db.ref('channelConnections/' + userToken).child('channels').orderByChild('last_time');
         var self = this;
         
      
@@ -193,6 +193,7 @@ getPermissionAsync = async () => {
                       
                         var desc ='';
                         var PPUri = '';
+                        var onay = snapshot.val()[kanalid]['onay'];
                         var last_time = snapshot.val()[kanalid]['last_time'];
                         var isGroup = '';
                         var userArray = [];
@@ -234,7 +235,7 @@ getPermissionAsync = async () => {
                                                       
                                                               PPUri= docSnapshot2.data().profilephoto;
       
-                                                                finalSonuc(kanalid,displaynameRef,desc,PPUri,last_time,index,notReadedMessage);
+                                                       finalSonuc(kanalid,displaynameRef,desc,PPUri,last_time,index,notReadedMessage,onay);
                                                              
                                                             
                                                    
@@ -250,7 +251,7 @@ getPermissionAsync = async () => {
                                   else{
                                   displaynameRef = docSnapshot.data().displayname;
                                     PPUri = docSnapshot.data().PPUri;
-                                    finalSonuc(kanalid,displaynameRef,desc,PPUri,last_time,index,notReadedMessage)
+                                    finalSonuc(kanalid,displaynameRef,desc,PPUri,last_time,index,notReadedMessage,onay)
                                   }
                           
   
@@ -258,7 +259,7 @@ getPermissionAsync = async () => {
                     
                       });
   
-                      function finalSonuc(kanalid,displaynameRef,desc,PPUri,last_time,index,notReadedMessage)
+                      function finalSonuc(kanalid,displaynameRef,desc,PPUri,last_time,index,notReadedMessage,onay)
                       {
                         
                      
@@ -266,7 +267,7 @@ getPermissionAsync = async () => {
                         // { id: 'AKSJDHASUIDHASJ',displayname:'Fırat Doğan', desc:'2015 Yılında Katıldı', PPUri: 'https://www.belbim.istanbul/FileManager/Image/Belbim/Person/FatihOzdemir.jpg'  },
                       
                       var gelenArray = self.state.tempItemQuota;
-                      var pushItem = {id:kanalid,displayname:displaynameRef,desc:desc,PPUri:PPUri,last_time:last_time,notReadedMessage:notReadedMessage} // Bura Yukardaki ile Aynı Olcaak
+                      var pushItem = {id:kanalid,displayname:displaynameRef,desc:desc,PPUri:PPUri,last_time:last_time,notReadedMessage:notReadedMessage,onay:onay} // Bura Yukardaki ile Aynı Olcaak
                       gelenArray.push(pushItem)
                         
                         self.setState({tempItemQuota:gelenArray,isEverythingReady:true});

@@ -45,6 +45,7 @@ export default class App extends Component {
       displayname : this.props.navigation.getParam('displayname'),
       desc : this.props.navigation.getParam('desc'),
       PPUri : this.props.navigation.getParam('PPUri'),
+      onay : this.props.navigation.getParam('onay'),
       dataSource: {},
       photos: null,
       selectedCount:0,
@@ -123,16 +124,22 @@ _GetList = async() =>
   componentDidMount() {
 
     firebase.database().ref('channelConnections').child(global.userInfo.userUid).child('channels').child(this.state.kanalid).update({unReadMessage:0});
-    this._getChannelPhotos();
+    try {
+     this._getChannelPhotos();
+   }
+   catch(error)
+   {
+    alert(error)
+   }
 
     this.props.navigation.setParams({NavigationTitleDisplayName:this.state.displayname});
     var that = this;
-    let items = Array.apply(null, Array(60)).map((v, i) => {
+    /*let items = Array.apply(null, Array(60)).map((v, i) => {
       return { id: i, src: 'https://image.yenisafak.com/resim/imagecrop/2019/03/13/05/35/resized_9dd7b-d08c1039monalisa.jpg' };
     });
     that.setState({
       dataSource: items,
-    });
+    });*/
 
   }
      
@@ -289,7 +296,7 @@ _getChannelPhotos = () =>
           />
 
 </Modal>
-<TouchableOpacity style={{width:60,height:60,borderRadius:60/2,position:'absolute',backgroundColor:'green',right:0,bottom:50,zIndex:9999,justifyContent:'center',alignItems:'center'}} onPress={()=>this.props.navigation.navigate('ImageUpload',{kanalid:this.state.kanalid,displayname:this.state.displayname,desc:this.state.desc,PPUri:this.state.PPUri})}><Ionicons name={"ios-settings"} size={25} color={"#FFF"} icon/></TouchableOpacity>
+<TouchableOpacity style={{width:60,height:60,borderRadius:60/2,position:'absolute',backgroundColor:'green',right:15,bottom:this.state.onay?45:110,zIndex:9999,justifyContent:'center',alignItems:'center'}} onPress={()=>this.props.navigation.navigate('ImageUpload',{kanalid:this.state.kanalid,displayname:this.state.displayname,desc:this.state.desc,PPUri:this.state.PPUri})}><Ionicons name={"ios-settings"} size={25} color={"#FFF"} icon/></TouchableOpacity>
 <ScrollView style={{marginTop:-60}}>
    
 <ImageBackground style={{width:100 + '%', height:110,marginTop:0}} source={{uri:this.state.PPUri}}   blurRadius={1}>
@@ -482,10 +489,17 @@ _getChannelPhotos = () =>
                 </View>
             </View>
 
-
+                            
 
 
       </ScrollView>
+     {!this.state.onay &&
+     <View style={{width:100 + '%',height:100, backgroundColor:'#000',position:'absolute',bottom:0,opacity:0.7}}>
+          <Text style={{width:95 + '%',color:'#FFF',alignSelf:'center',marginTop:12,marginBottom:12}}>{this.state.displayname} adlı kişi size fotoğraf göndermek amacıyla sizi ekledi. Kabul Edin veya Reddedin.</Text>
+      <View style={{flexDirection:'row'}}><View style={{width:50 + '%'}}><Button title='Redded' buttonStyle={{height:45,borderRadius:0,backgroundColor:'#dd2c00'}}/></View><View style={{width:50 + '%'}}><Button title='Kabul Et' buttonStyle={{height:45,borderRadius:0}} onPress={()=>{ firebase.database().ref('channelConnections').child(this.state.userToken).child('channels').child(this.state.kanalid).update({onay:true}); this.setState({onay:true})/* Buraya Kabul et Diye Değiştir. */}}/></View></View>
+      </View>
+    }
+
 </View>
 
     );

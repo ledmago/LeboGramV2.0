@@ -11,7 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
  import Swipeable from 'react-native-gesture-handler/Swipeable';
  import Ripple from 'react-native-material-ripple';
- import { Badge } from 'react-native-elements';
+ import { Badge,Tooltip } from 'react-native-elements';
 import { GestureHandler } from 'expo';
 
 const styles = StyleSheet.create({
@@ -152,7 +152,7 @@ const RightActions = ({ Itemid,progress, dragX, onPress }) => {
   );
 };
 
-const ListItem = ({id,username,displayname, desc, PPUri,notReadedMessage, onSwipeFromLeft, onRightPress,navigate }) => (
+const ListItem = ({id,username,displayname, desc, PPUri,notReadedMessage,onay, onSwipeFromLeft, onRightPress,navigate }) => (
 
   <Swipeable
     renderLeftActions={LeftActions}
@@ -165,14 +165,16 @@ const ListItem = ({id,username,displayname, desc, PPUri,notReadedMessage, onSwip
     
           
     <Ripple rippleDuration={600} onPress={()=>{
-    navigate.navigate('ChatScreen',{kanalid:id,displayname:displayname,desc:desc,PPUri:PPUri})
+    navigate.navigate('ChatScreen',{kanalid:id,displayname:displayname,desc:desc,PPUri:PPUri,onay:onay})
     
   
   }}>
           <View style={styles.kisiListItem}>
               <Image source={{uri:PPUri}} style={{width:60,height:60,borderRadius:60/2,}} />
-              <View style={styles.kisiListItemContentContainer}><View style={styles.kisiListItemTextcontainer}>
-                <Text style={styles.kisiListItemTextHeader}>{displayname}</Text>
+              <View style={styles.kisiListItemContentContainer}>
+             <View style={styles.kisiListItemTextcontainer}>
+             {!onay && <View style={{flexDirection:'row'}}><View style={{marginRight:5}}><Ionicons name={"ios-alert"} size={28} color={"#d43f3e"}/></View><Text style={styles.kisiListItemTextHeader}>{displayname}</Text></View>}
+               {onay && <Text style={styles.kisiListItemTextHeader}>{displayname}</Text>}
                 <Text style={styles.kisiListItemTextSubTitle}>{desc}</Text>
             </View>
             <View style={styles.kisiListItemArrow}><Ionicons name={"ios-arrow-forward"} size={25} color={"#222"}/></View>

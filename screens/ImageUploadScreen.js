@@ -204,7 +204,10 @@ export default class App extends Component {
             {
               var gelenUserData = firebase.database().ref('channelConnections').child(data).child('channels').child(self.state.kanalid).once('value',(gelenSnapshot)=>{
                   var arttir = gelenSnapshot.val()['unReadMessage'] + self.state.selectedCount;
-                  firebase.database().ref('channelConnections').child(data).child('channels').child(self.state.kanalid).update({unReadMessage:arttir});
+                  var date = new Date();
+                  var timestamp = date.getTime();
+                  firebase.database().ref('channelConnections').child(data).child('channels').child(self.state.kanalid).update({unReadMessage:arttir,last_time:timestamp});
+                  firebase.database().ref('channelConnections').child(global.userInfo.userUid).child('channels').child(self.state.kanalid).update({last_time:timestamp});
 
               })
             }
