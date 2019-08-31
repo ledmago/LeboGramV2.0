@@ -27,6 +27,7 @@ import SettingsScreen from './SettingsScreen';
 import CustomDrawerContentComponent from './Drawer';
 import firebase from '../components/Firebase';
 import Constants from 'expo-constants';
+import * as Location from 'expo-location';
 import ListItem, { Separator } from '../components/ListPostUser';
 import LoadingScreen from '../components/LoadingScreen';
 /*const CustomDrawerContentComponent = props => (
@@ -77,7 +78,8 @@ class HomeScreen extends React.Component {
     isItemQuotaFinish:false,
     displaynameRef:'asd',
     isKonusmaYok:true,
-   
+    location: null,
+    isLocationEnable:false,
     
 };
 getPermissionAsync = async () => {
@@ -145,10 +147,56 @@ getPermissionAsync = async () => {
   }
 
 
+  LocationServices()
+  {
+    if(this.state.isLocationEnable) // Görünürü Açıksa
+    {
+      this.setState({isLocationEnable:false});
+      firebase.firestore().collection('locations').doc(global.userInfo.userUid).update({gorunur:false});
+   
+    }
+    else
+    {
+      this.setState({isLocationEnable:true});
+      this._getLocationAsync();
+    } 
+
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        location: 'Permission to access location was denied',
+      });
+    }
+
+   try{let location = await Location.getCurrentPositionAsync({});
+
+   var locationObject = {latitude:location.coords.latitude, longitude:location.coords.longitude}
+    this.setState({ location:locationObject });
+    
+    firebase.firestore().collection('locations').doc(global.userInfo.userUid).set({userUid:global.userInfo.userUid,latitude:locationObject.latitude,longitude:locationObject.longitude,gorunur:true});
+   
+  } catch(error)
+  {
+    if(Location.hasServicesEnabledAsync == false)
+    {
+      this._getLocationAsync();
+    }
+    else
+    {
+      alert(error);
+    }
+  }
+
+
+
+  };
+
   // Load Channel List
   async componentDidMount(){
   
-
 
 
     this.getPermissionAsync();
@@ -418,16 +466,10 @@ getPermissionAsync = async () => {
         <Image source={{uri:this.state.PPUri}} style={{width:67,height:67,borderRadius:67/2,borderColor:'green',borderWidth:2}} />
         <View style={homeScreenStyle.profileTextContainer}>
           <Text style={homeScreenStyle.textTitle}>{this.state.name}</Text>
-         <Text style={homeScreenStyle.textSubtitle}>Yakındakiler tarafından görülmeye açıktır.</Text>
+         <Text style={homeScreenStyle.textSubtitle}>{this.state.isLocationEnable?'Yakındakiler tarafından görülmeye açıktır.':'Yakındakiler tarafından görülmezsiniz.'}</Text>
         </View>
         </Ripple>
-        <TouchableOpacity onPress={()=>{
-          
-
-      
-          
-
-        }}><Ionicons style={{marginLeft:10}}name={"ios-volume-high"} size={50} color={"#FFF"} /></TouchableOpacity>
+        <TouchableOpacity  onPress={()=>{this.LocationServices();}} ><Ionicons style={{marginLeft:10}}name={this.state.isLocationEnable?'ios-volume-high':'ios-volume-off'} size={50} color={"#FFF"} /></TouchableOpacity>
 
               </View>
       
@@ -439,7 +481,7 @@ getPermissionAsync = async () => {
      
       <View style={homeScreenStyle.sharePanel}>
          <TouchableOpacity onPress={()=>this.props.navigation.navigate('QRScanner')} style={homeScreenStyle.sharePanelIcons}><Ionicons style={{marginLeft:10}}name={"ios-barcode"} size={45} color={"#6E6EE8"} /></TouchableOpacity>
-          <TouchableOpacity  style={homeScreenStyle.sharePanelIcons}><Ionicons style={{marginLeft:10}}name={"ios-radio"} size={45} color={"#6E6EE8"} /></TouchableOpacity>
+          <TouchableOpacity   style={homeScreenStyle.sharePanelIcons} onPress={()=>{if(this.state.isLocationEnable && this.state.location != null){this.props.navigation.navigate('userSearch',{location:this.state.location})}else{alert('Önce Görünürlüğünüzü açık yapın')}}}><Ionicons style={{marginLeft:10}}name={"ios-radio"} size={45} color={"#6E6EE8"} /></TouchableOpacity>
           <TouchableOpacity onPress={()=>this.props.navigation.navigate('UserSearch')} style={homeScreenStyle.sharePanelIcons}><Ionicons style={{marginLeft:10}}name={"ios-search"} size={45} color={"#6E6EE8"} /></TouchableOpacity>
       </View>
       
