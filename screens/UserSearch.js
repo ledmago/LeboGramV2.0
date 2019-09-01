@@ -57,7 +57,43 @@ async componentDidMount()
   
 
   const gelenUserId = this.props.navigation.getParam('userUid',null);
-  
+  const gelenLocation = this.props.navigation.getParam('location',null);
+  if(gelenLocation !=null)
+  {
+    var date = new Date();
+    var now = parseFloat(new Date().getTime().toString().slice(0,-3))
+    await firebase.firestore().collection('locations')
+    .where('latitude', '>', gelenLocation.latitude - 0.0005)
+    .where('latitude', '<', gelenLocation.latitude + 0.0005)
+    .get().then((usersArray)=>{
+      usersArray.forEach((users)=>{
+        var ozaman = parseFloat(users.data().timestamp.toString().slice(0,-3))
+
+        if(users.data().longitude > gelenLocation.longitude - 0.0005 && users.data().longitude < gelenLocation.longitude + 0.0005 && (now >= ozaman && ozaman  <= parseFloat(now + 120)) && users.data().userUid != global.userInfo.userUid)
+        {
+          
+
+                        var self = this;
+                        const dbh_firestore = firebase.firestore();
+                        const  selectUser =  dbh_firestore.collection('users').doc(users.data().userUid)
+                        
+                        selectUser.get()
+                      .then((docSnapshot) => {
+                  
+                        if(docSnapshot.exists)
+                        {
+                         
+                          var indexNumber = 0;
+                         this._finalSonuc(docSnapshot.data().name,docSnapshot.data().profilephoto,users.data().userUid,indexNumber,1) // 1 Yazdık Çünkü Sadece 1 kişiyi bulacak
+                        }
+                            })
+
+        }
+       
+
+      })
+    })
+  }
   if(gelenUserId != null){
 
    
@@ -76,7 +112,7 @@ async componentDidMount()
                    this._finalSonuc(docSnapshot.data().name,docSnapshot.data().profilephoto,gelenUserId,indexNumber,1) // 1 Yazdık Çünkü Sadece 1 kişiyi bulacak
                   }
                       })
-                  }
+  }
 
 
 

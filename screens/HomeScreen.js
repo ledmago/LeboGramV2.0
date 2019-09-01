@@ -152,7 +152,7 @@ getPermissionAsync = async () => {
     if(this.state.isLocationEnable) // Görünürü Açıksa
     {
       this.setState({isLocationEnable:false});
-      firebase.firestore().collection('locations').doc(global.userInfo.userUid).update({gorunur:false});
+      firebase.firestore().collection('locations').doc(global.userInfo.userUid).update({timestamp:0});
    
     }
     else
@@ -175,8 +175,9 @@ getPermissionAsync = async () => {
 
    var locationObject = {latitude:location.coords.latitude, longitude:location.coords.longitude}
     this.setState({ location:locationObject });
-    
-    firebase.firestore().collection('locations').doc(global.userInfo.userUid).set({userUid:global.userInfo.userUid,latitude:locationObject.latitude,longitude:locationObject.longitude,gorunur:true});
+    var date = new Date();
+    var timestamp = date.getTime();
+    firebase.firestore().collection('locations').doc(global.userInfo.userUid).set({userUid:global.userInfo.userUid,latitude:locationObject.latitude,longitude:locationObject.longitude,timestamp:timestamp});
    
   } catch(error)
   {
@@ -481,7 +482,7 @@ getPermissionAsync = async () => {
      
       <View style={homeScreenStyle.sharePanel}>
          <TouchableOpacity onPress={()=>this.props.navigation.navigate('QRScanner')} style={homeScreenStyle.sharePanelIcons}><Ionicons style={{marginLeft:10}}name={"ios-barcode"} size={45} color={"#6E6EE8"} /></TouchableOpacity>
-          <TouchableOpacity   style={homeScreenStyle.sharePanelIcons} onPress={()=>{if(this.state.isLocationEnable && this.state.location != null){this.props.navigation.navigate('userSearch',{location:this.state.location})}else{alert('Önce Görünürlüğünüzü açık yapın')}}}><Ionicons style={{marginLeft:10}}name={"ios-radio"} size={45} color={"#6E6EE8"} /></TouchableOpacity>
+          <TouchableOpacity   style={homeScreenStyle.sharePanelIcons} onPress={()=>{if(this.state.isLocationEnable && this.state.location != null){this.props.navigation.navigate('UserSearch',{location:this.state.location})}else{alert('Önce Görünürlüğünüzü açık yapın')}}}><Ionicons style={{marginLeft:10}}name={"ios-radio"} size={45} color={"#6E6EE8"} /></TouchableOpacity>
           <TouchableOpacity onPress={()=>this.props.navigation.navigate('UserSearch')} style={homeScreenStyle.sharePanelIcons}><Ionicons style={{marginLeft:10}}name={"ios-search"} size={45} color={"#6E6EE8"} /></TouchableOpacity>
       </View>
       
