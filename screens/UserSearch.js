@@ -69,9 +69,9 @@ async componentDidMount()
       usersArray.forEach((users)=>{
         var ozaman = parseFloat(users.data().timestamp.toString().slice(0,-3))
 
-        if(users.data().longitude > gelenLocation.longitude - 0.0005 && users.data().longitude < gelenLocation.longitude + 0.0005 && (now >= ozaman && ozaman  <= parseFloat(now + 120)) && users.data().userUid != global.userInfo.userUid)
+       
+        if(users.data().longitude > gelenLocation.longitude - 0.0005 && users.data().longitude < gelenLocation.longitude + 0.0005 && (now >= ozaman && now  <= parseFloat(ozaman + 20)) && users.data().userUid != global.userInfo.userUid)
         {
-          
 
                         var self = this;
                         const dbh_firestore = firebase.firestore();

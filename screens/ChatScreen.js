@@ -123,7 +123,7 @@ _GetList = async() =>
  // ---------------------------- 
   componentDidMount() {
 
-    firebase.database().ref('channelConnections').child(global.userInfo.userUid).child('channels').child(this.state.kanalid).update({unReadMessage:0});
+   
     try {
      this._getChannelPhotos();
    }

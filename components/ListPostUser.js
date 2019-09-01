@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
  import Ripple from 'react-native-material-ripple';
  import { Badge,Tooltip } from 'react-native-elements';
 import { GestureHandler } from 'expo';
+import firebase from '../components/Firebase';
 
 const styles = StyleSheet.create({
   container: {
@@ -165,7 +166,9 @@ const ListItem = ({id,username,displayname, desc, PPUri,notReadedMessage,onay, o
     
           
     <Ripple rippleDuration={600} onPress={()=>{
-    navigate.navigate('ChatScreen',{kanalid:id,displayname:displayname,desc:desc,PPUri:PPUri,onay:onay})
+      navigate.navigate('ChatScreen',{kanalid:id,displayname:displayname,desc:desc,PPUri:PPUri,onay:onay})
+       firebase.database().ref('channelConnections').child(global.userInfo.userUid).child('channels').child(id/* == gelen kanal id si */).update({unReadMessage:0});
+    
     
   
   }}>
