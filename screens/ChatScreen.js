@@ -251,6 +251,8 @@ _getChannelPhotos = () =>
             if(son_item == index && index >= 0)
             {
                 self.setState({Posts:tempArray.reverse()});
+                images.reverse();
+
                 self._ListSave();
             }
          
