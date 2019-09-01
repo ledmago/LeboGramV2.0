@@ -15,6 +15,7 @@ import {
   Alert,
   ActivityIndicator,
   FlatList,
+  Vibration
 } from 'react-native';
 import Ripple from 'react-native-material-ripple';
 import * as Permissions from 'expo-permissions';
@@ -30,6 +31,9 @@ import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import ListItem, { Separator } from '../components/ListPostUser';
 import LoadingScreen from '../components/LoadingScreen';
+import {
+  Notifications,
+} from 'expo';
 /*const CustomDrawerContentComponent = props => (
   <ScrollView>
     <SafeAreaView style={{flex:1}} forceInset={{ top: 'always', horizontal: 'never' }}>
@@ -82,14 +86,23 @@ class HomeScreen extends React.Component {
     isLocationEnable:false,
     
 };
-getPermissionAsync = async () => {
+getPermissionAsync = async () => { 
+  const { statusNotifications } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
   if (Constants.platform.ios || Constants.platform.android) {
     const { statusCamera } = await Permissions.askAsync(Permissions.CAMERA);
     const { statusCameraRoll } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
    
+   
   }
 }
-
+sendNotificationImmediately = async (gonderen,adet) => {
+  Vibration.vibrate(1000);
+  let notificationId = await Notifications.presentLocalNotificationAsync({
+    title: adet + 'Yeni Mesaj Alındı',
+    body: gonderen + ' tarafından ' + adet + ' adet yeni mesajınız var',
+  });
+  console.log(notificationId); // can be saved in AsyncStorage or send to server
+};
   _bootstrapAsync = async () => {
     const userToken = await AsyncStorage.getItem('userToken');
     if(userToken)
@@ -197,8 +210,8 @@ getPermissionAsync = async () => {
 
   // Load Channel List
   async componentDidMount(){
-  
-
+    
+ 
 
     this.getPermissionAsync();
     LoadChannelList = async ()=> {
@@ -239,7 +252,8 @@ getPermissionAsync = async () => {
                       {
                       
                         var notReadedMessage = snapshot.val()[kanalid]['unReadMessage'];
-                      
+                        var timestamp_gelen = parseFloat(snapshot.val()[kanalid]['last_time'].toString().slice(0,-3));
+                        var now = parseFloat(new Date().getTime().toString().slice(0,-3));
                         var desc ='';
                         var PPUri = '';
                         var onay = snapshot.val()[kanalid]['onay'];
@@ -283,6 +297,11 @@ getPermissionAsync = async () => {
                                                       
                                                       
                                                               PPUri= docSnapshot2.data().profilephoto;
+                                                              if(notReadedMessage > 0 && (now >= timestamp_gelen && now <= timestamp_gelen + 5))
+                                                              {
+                                                                this.sendNotificationImmediately(displaynameRef,notReadedMessage);
+                                                                
+                                                              }
       
                                                        finalSonuc(kanalid,displaynameRef,desc,PPUri,last_time,index,notReadedMessage,onay);
                                                              
