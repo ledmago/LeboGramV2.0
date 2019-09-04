@@ -13,7 +13,8 @@ import {
   Vibration,
   Dimensions,
   Text,
-  Picker
+  Picker,
+  ImageEditor
 } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import Ripple from 'react-native-material-ripple';
@@ -85,6 +86,10 @@ export default class App extends Component {
     }
   }
   async componentDidMount() {
+
+   
+
+
         this.props.navigation.setParams({ ResimGonderFirebaseNavigation: this.ResimGonderFirebase});
     this.getPermissionAsync();
         this._getPhotosAsync().catch(error => {
@@ -123,7 +128,7 @@ export default class App extends Component {
         <Image
         key={Math.random()}
           source={photo.image}
-          resizeMode="contain"
+          resizeMode='contain'
           style={{ height: 100, width: 100, resizeMode: 'contain' }}
         />
       );
@@ -183,12 +188,33 @@ export default class App extends Component {
     
   increaseProgressbar = () =>
   {
+    var self= this;
     var select = this.state.selectedCountUploaded + 1;
     this.setState({selectedCountUploaded:select})
    if(this.state.selectedCountUploaded == this.state.selectedCount)
    {
    
     this.setState({progress:100})
+      // uNReadMessagesi Arttır
+      firebase.firestore().collection('channels').doc(self.state.kanalid).get().then((datasnapShot)=>
+      {
+          var Dataarray = Object.keys(datasnapShot.data().users);
+          Dataarray.map((data)=>{
+            if(data != global.userInfo.userUid) // Kendi Id si değilse diğerlerinin okunmamış mesaj sayısını bir arttır
+            {
+              var gelenUserData = firebase.database().ref('channelConnections').child(data).child('channels').child(self.state.kanalid).once('value',(gelenSnapshot)=>{
+                  var arttir = gelenSnapshot.val()['unReadMessage'] + self.state.selectedCount;
+                  var date = new Date();
+                  var timestamp = date.getTime();
+                  firebase.database().ref('channelConnections').child(data).child('channels').child(self.state.kanalid).update({unReadMessage:arttir,last_time:timestamp});
+                  firebase.database().ref('channelConnections').child(global.userInfo.userUid).child('channels').child(self.state.kanalid).update({last_time:timestamp});
+
+              })
+            }
+
+          });
+
+      });
    }
    else{
   
@@ -201,100 +227,146 @@ export default class App extends Component {
     
     
   }
+
   ResimGonderFirebase = async () =>{
    
+  
       if(this.state.selectedCount > 0)
       {
 
-      
+
       var selectedItems = [];
       if(this.state.selectedCount <= this.MaxSelectCount)
       {
        
         this.setState({isUploadButton:true,})
-
-
+      
+        
           this.state.photos.map((data)=>{
-            if(data.node.isSelect == true)
-            {
-              selectedItems.push(data.node.image);
-            }
-        });
-
-       
-       selectedItems.map(async (data,index)=>{
          
-        
-          var self = this;
-          alert('gir' + index)
-
-          // Resim Boyutu Küçültme 
-
-          const smallImage = await ImageManipulator.manipulateAsync(
-            data.uri,
-            [{ resize: {width:250} }],
-          { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
-        );
-        // -------
-         
-          const response = await fetch(smallImage.uri);
-          const blob = await response.blob();
-          const ImageName = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); // Random Name
-        
-          var ref = firebase.storage().ref().child('sendImages/' + this.state.kanalid + '/' + ImageName + '/small');
-        
-          ref.put(blob).then(async function(){
-            self.setState({UploadingNowImgUri:data.uri}); // Ekranda Resmi Göster
-            const responseBig = await fetch(data.uri);
-            const blobBig = await responseBig.blob();
-            var  refBig = await firebase.storage().ref().child('sendImages/' + self.state.kanalid + '/' + ImageName + '/big').put(blobBig).on('state_changed',
-           async function progress(snapshot) {
-              this.percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              self.setState({UploadPercent:this.percentage})
-             
-
-              if(this.percentage >99)
+              if(data.node.isSelect == true)
               {
-
-                   // Yüklendini belirtmek için
-              self.increaseProgressbar();
-             
-
-
-
-              var db = firebase.database();
-              var date = new Date();
               
-            var ref = await db.ref('chatMessages/'+ self.state.kanalid).push({
-              timestamp:date.getTime(),
-              type:'photo',
-              message:'none',
-              senderid:self.state.userToken,
-              photoName:ImageName,
-            }).then(()=>{     
-              
-         
-            });
+                selectedItems.push(data.node.image);
               
               }
+        });
 
-
-
-
-
-
-            })
-            
-           
-          
-          }).catch(function(error){alert('hata')});
-          
-      });
-
+      
+               selectedItems.map(async (data,index)=>{
+      
         
+                      var self = this;
+                    // alert('gir' + index)
+
+                      // Resim Boyutu Küçültme 
+
+
+                      var CroppedUri = '';
+
+                      cropData = {
+                        offset:{x:0,y:0}, 
+                        size:{width:data.width, height:data.height},
+                      displaySize:{width:250, height:250}, //THESE 2 ARE OPTIONAL. 
+                      resizeMode:'cover', 
+                    }
+                    // Crop the image. 
+                    try{
+                        await ImageEditor.cropImage(data.uri, 
+                            cropData, async(successURI) => { 
+                              CroppedUri = successURI
+                                            
+
+
+                      const response = await fetch(CroppedUri).catch((error)=>alert(error));
+                      const blob = await response.blob();
+                      const ImageName = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); // Random Name
+                    
+                      var ref = firebase.storage().ref().child('sendImages/' + this.state.kanalid + '/' + ImageName + '/small');
+                    
+                      ref.put(blob).then(async function(){
+                        
+                        self.setState({UploadingNowImgUri:data.uri}); // Ekranda Resmi Göster
+                        const responseBig = await fetch(data.uri);
+                        const blobBig = await responseBig.blob();
+                        var  refBig = await firebase.storage().ref().child('sendImages/' + self.state.kanalid + '/' + ImageName + '/big').put(blobBig).on('state_changed',
+                      async function progress(snapshot) {
+                    
+                          this.percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                          self.setState({UploadPercent:this.percentage})
+                        
+
+                          if(this.percentage >99)
+                          {
+                          
+                              // Yüklendini belirtmek için
+                          self.increaseProgressbar();
+                        
+
+
+
+                          var db = firebase.database();
+                          var date = new Date();
+                          
+                        var ref = await db.ref('chatMessages/'+ self.state.kanalid).push({
+                          timestamp:date.getTime(),
+                          readed:false,
+                          type:'photo',
+                          message:'none',
+                          senderid:self.state.userToken,
+                          photoName:ImageName,
+
+                        }).then(()=>{     
+                            
+                        
+
+                    
+                        });
+                          
+                          }
+
+
+
+
+
+
+                        })
+                        
+                      
+                      
+                      }).catch(function(error){alert('hata')});
+                            
+                            
+                            }, 
+                            (error) =>{console.log('cropImage,',error)}
+                        )
+                    }
+                    catch(error){
+                      alert(error)
+                    }
+
+
+                      /*   
+                          const smallImage = await ImageManipulator.manipulateAsync(
+                            data.uri,
+                            [{ resize: {width:250} }],
+                          { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
+                        ).catch((error)=>alert(error + '    -     ' + JSON.parse(data)));
+                        // -------
+                  */
+
+
+
+          
+              });
+
+            
       }
      
     }
+
+
+
   }
 
 
@@ -431,7 +503,8 @@ style={{color:'#000'}}
         {/* Upload edildiğindeki yükleme ekranı (popup)*/
             
               this.state.isUploadButton && 
-            <View style={{width:Dimensions.get('screen').width, height:Dimensions.get('screen').height,position:'absolute',bottom:0,left:0}}>
+             
+                <View style={{zIndex:9999999999999,width:Dimensions.get('screen').width, height:Dimensions.get('screen').height,position:'absolute',bottom:0,left:0}}>
              
                     <View style={styles.containerblock}>
                    
@@ -439,7 +512,7 @@ style={{color:'#000'}}
                     </View>
 
 
-                    <View style={{backgroundColor:'#444',width:80 + '%',height:350,position: 'absolute',zIndex:9999,alignSelf:'center',top:(Dimensions.get('screen').height/2) - (350/2) - 50}}>
+                    <View style={{backgroundColor:'#444',width:80 + '%',height:350,position: 'absolute',zIndex:99999,alignSelf:'center',top:(Dimensions.get('screen').height/2) - (350/2) - 50}}>
                     <Image source={{uri:this.state.UploadingNowImgUri}} style={{width:100 + '%', height:100+ '%'}}/>
                     <View style={{position:'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
                     <ProgressCircle
@@ -478,7 +551,8 @@ style={{color:'#000'}}
                             </Ripple>
                     </View>
               </View>
-            }
+             
+           }
        
 
 
