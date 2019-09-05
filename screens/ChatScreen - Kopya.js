@@ -32,7 +32,6 @@ import { NavigationActions } from 'react-navigation';
 import { ScrollView } from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { Image } from 'react-native-elements';
-import { ScreenOrientation } from 'expo';
 let images = []
 
 
@@ -189,8 +188,8 @@ _GetList = async() =>
     }
 };
 // Modalı aktif hale getir ve image indexi açılan index yaparak fotoğrafın açılmasını sağla
-openModal = async (index) => {
-    await ScreenOrientation.unlockAsync();
+openModal = (index) => {
+    
     this.setState({isModalOpened: true, currentImageIndex: index })
  }
 
@@ -280,7 +279,7 @@ _getChannelPhotos = () =>
   } = this.state;
     return (
 <View style={{flex:1}}>
-<Modal visible={this.state.isModalOpened} presentationStyle={'overFullScreen'} transparent={true} animationType='slide'  onRequestClose={async () => {this.setState({ isModalOpened: false }); await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);}}>
+<Modal visible={this.state.isModalOpened} transparent={true} animationType='slide'  onRequestClose={() => this.setState({ isModalOpened: false })}>
   
    <ImageViewer
             imageUrls={images}
@@ -289,6 +288,7 @@ _getChannelPhotos = () =>
             saveToLocalByLongPress={true}
             loadingRender={()=>{return <ActivityIndicator size={60}></ActivityIndicator>}}
             onSave={()=>alert('Image Saved to Gallery')}
+            
             onSwipeDown={() => {
               this.setState({isModalOpened:false})
             }}
