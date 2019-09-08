@@ -85,10 +85,13 @@ export default class App extends Component {
       }
     }
   }
-  async componentDidMount() {
 
    
 
+  async componentDidMount() {
+
+
+  
 
         this.props.navigation.setParams({ ResimGonderFirebaseNavigation: this.ResimGonderFirebase});
     this.getPermissionAsync();
@@ -252,113 +255,114 @@ export default class App extends Component {
               }
         });
 
+
+               
       
-               selectedItems.map(async (data,index)=>{
-      
-        
-                      var self = this;
-                    // alert('gir' + index)
+        for(i = 0; i < selectedItems.length; i++)
+        {
+          data = selectedItems[i];
+          index = i;
+          await new Promise(async (res, rej) => {
 
-                      // Resim Boyutu Küçültme 
+            var self = this;
+            // alert('gir' + index)
 
-
-                      var CroppedUri = '';
-
-                      cropData = {
-                        offset:{x:0,y:0}, 
-                        size:{width:data.width, height:data.height},
-                      displaySize:{width:250, height:250}, //THESE 2 ARE OPTIONAL. 
-                      resizeMode:'cover', 
-                    }
-                    // Crop the image. 
-                    try{
-                        await ImageEditor.cropImage(data.uri, 
-                            cropData, async(successURI) => { 
-                              CroppedUri = successURI
-                                            
+              // Resim Boyutu Küçültme 
 
 
-                      const response = await fetch(CroppedUri).catch((error)=>alert(error));
-                      const blob = await response.blob();
-                      const ImageName = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); // Random Name
+              var CroppedUri = '';
+
+              cropData = {
+                offset:{x:0,y:0}, 
+                size:{width:data.width, height:data.height},
+              displaySize:{width:250, height:250}, //THESE 2 ARE OPTIONAL. 
+              resizeMode:'cover', 
+            }
+            // Crop the image. 
+            try{
+                await ImageEditor.cropImage(data.uri, 
+                    cropData, async(successURI) => { 
+                      CroppedUri = successURI
+                                    
+
+
+              const response = await fetch(CroppedUri).catch((error)=>alert(error));
+              const blob = await response.blob();
+              const ImageName = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); // Random Name
+            
+              var ref = firebase.storage().ref().child('sendImages/' + this.state.kanalid + '/' + ImageName + '/small');
+            
+              ref.put(blob).then(async function(){
+                
+                self.setState({UploadingNowImgUri:data.uri}); // Ekranda Resmi Göster
+                const responseBig = await fetch(data.uri);
+                const blobBig = await responseBig.blob();
+                var  refBig = await firebase.storage().ref().child('sendImages/' + self.state.kanalid + '/' + ImageName + '/big').put(blobBig).on('state_changed',
+              async function progress(snapshot) {
+            
+                  this.percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  self.setState({UploadPercent:this.percentage})
+                
+
+                  if(this.percentage >99)
+                  {
+                  
+                      // Yüklendini belirtmek için
+                  self.increaseProgressbar();
+                
+
+
+
+                  var db = firebase.database();
+                  var date = new Date();
+                  
+                var ref = await db.ref('chatMessages/'+ self.state.kanalid).push({
+                  timestamp:date.getTime(),
+                  readed:false,
+                  type:'photo',
+                  message:'none',
+                  senderid:self.state.userToken,
+                  photoName:ImageName,
+
+                }).then(()=>{     
                     
-                      var ref = firebase.storage().ref().child('sendImages/' + this.state.kanalid + '/' + ImageName + '/small');
+                res();
+
+            
+                });
+                  
+                  }
+
+
+
+
+
+
+                })
+                
+              
+              
+              }).catch(function(error){alert('hata')});
                     
-                      ref.put(blob).then(async function(){
-                        
-                        self.setState({UploadingNowImgUri:data.uri}); // Ekranda Resmi Göster
-                        const responseBig = await fetch(data.uri);
-                        const blobBig = await responseBig.blob();
-                        var  refBig = await firebase.storage().ref().child('sendImages/' + self.state.kanalid + '/' + ImageName + '/big').put(blobBig).on('state_changed',
-                      async function progress(snapshot) {
                     
-                          this.percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                          self.setState({UploadPercent:this.percentage})
-                        
-
-                          if(this.percentage >99)
-                          {
-                          
-                              // Yüklendini belirtmek için
-                          self.increaseProgressbar();
-                        
+                    }, 
+                    (error) =>{console.log('cropImage,',error)}
+                )
+            }
+            catch(error){
+              alert(error)
+            }
 
 
 
-                          var db = firebase.database();
-                          var date = new Date();
-                          
-                        var ref = await db.ref('chatMessages/'+ self.state.kanalid).push({
-                          timestamp:date.getTime(),
-                          readed:false,
-                          type:'photo',
-                          message:'none',
-                          senderid:self.state.userToken,
-                          photoName:ImageName,
-
-                        }).then(()=>{     
-                            
-                        
-
-                    
-                        });
-                          
-                          }
-
-
-
-
-
-
-                        })
-                        
-                      
-                      
-                      }).catch(function(error){alert('hata')});
-                            
-                            
-                            }, 
-                            (error) =>{console.log('cropImage,',error)}
-                        )
-                    }
-                    catch(error){
-                      alert(error)
-                    }
-
-
-                      /*   
-                          const smallImage = await ImageManipulator.manipulateAsync(
-                            data.uri,
-                            [{ resize: {width:250} }],
-                          { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
-                        ).catch((error)=>alert(error + '    -     ' + JSON.parse(data)));
-                        // -------
-                  */
+          });
+        }
+                   
 
 
 
           
-              });
+     
 
             
       }

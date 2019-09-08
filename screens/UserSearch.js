@@ -124,7 +124,7 @@ async componentDidMount()
 
   _finalSonuc = (displaynameRef,PPUri,uid,index,size) =>
   {
-    if(PPUri == null | PPUri == ''){ PPUri = 'https://firebasestorage.googleapis.com/v0/b/lebogram-4312a.appspot.com/o/profilephoto%2F' + uid + '%2Fsmall?alt=media';}
+    if(PPUri == null | PPUri == ''){ PPUri = 'https://firebasestorage.googleapis.com/v0/b/lebogram2.appspot.com/o/profilephoto%2F' + uid + '%2Fsmall?alt=media';}
       this.setState({isUserNotFound:false})
             // console.log('-----' + kanalid + ' | ' + displaynameRef + ' | ' + desc + ' | ' + PPUri + ' ----- ' );
           // { id: 'AKSJDHASUIDHASJ',displayname:'Fırat Doğan', desc:'2015 Yılında Katıldı', PPUri: 'https://www.belbim.istanbul/FileManager/Image/Belbim/Person/FatihOzdemir.jpg'  },

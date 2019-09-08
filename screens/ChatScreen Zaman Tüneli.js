@@ -33,7 +33,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { Image } from 'react-native-elements';
 import { ScreenOrientation } from 'expo';
-import { Video } from 'expo-av';
+import { GiftedChat } from 'react-native-gifted-chat'
 let images = []
 
 
@@ -64,7 +64,6 @@ export default class App extends Component {
       translateY: -1000,
       isModalOpened: false,  //Controls if modal is opened or closed
       currentImageIndex: 0,
-      nowShowing:null,
       messages: [
         {
           _id: 1,
@@ -76,146 +75,6 @@ export default class App extends Component {
             avatar: 'https://placeimg.com/140/140/any',
           },
         },
-        {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native',
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          },
-          {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native',
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          },
-          {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native',
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          },
-          {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native',
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          },
-          {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native',
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          },
-          {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native',
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          },
-          {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native',
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          },
-          {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native',
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          },
-          {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native',
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          },
-          {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native',
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          },
-          {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native',
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          },
-          {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native',
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          },
-          {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native',
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          },
-          {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native',
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          },
       ],
     };
     this.MaxSelectCount = 5
@@ -345,17 +204,7 @@ _GetList = async() =>
 // Modalı aktif hale getir ve image indexi açılan index yaparak fotoğrafın açılmasını sağla
 openModal = async (index) => {
     await ScreenOrientation.unlockAsync();
-   
-    if(images[index].type == 'video')
-    {
-      this.props.navigation.navigate('VideoScreen',{uri:images[index].url})
-    }
-    else{
-      this.setState({isModalOpened: true, currentImageIndex: index,nowShowing:images[index].type })
-    }
-    
-
-    
+    this.setState({isModalOpened: true, currentImageIndex: index })
  }
 
  onSend(messages = []) {
@@ -403,15 +252,14 @@ _getChannelPhotos = () =>
               
           
                  // Buraası Arızalı
-                 
-                 var size = type=='video'?'%2Fbig':'%2Fsmall';
+                 var size = '%2Fsmall';
                  var bigger = '%2Fbig';
-                 var urlForSize = 'https://firebasestorage.googleapis.com/v0/b/lebogram2.appspot.com/o/sendImages'+ '%2F' + this.state.kanalid + '%2F' + photoName + size + '?alt=media';
-                  var urlForBigger = 'https://firebasestorage.googleapis.com/v0/b/lebogram2.appspot.com/o/sendImages'+ '%2F' + this.state.kanalid + '%2F' + photoName + bigger + '?alt=media';
+           var urlForSize = 'https://firebasestorage.googleapis.com/v0/b/lebogram-4312a.appspot.com/o/sendImages'+ '%2F' + this.state.kanalid + '%2F' + photoName + size + '?alt=media';
+           var urlForBigger = 'https://firebasestorage.googleapis.com/v0/b/lebogram-4312a.appspot.com/o/sendImages'+ '%2F' + this.state.kanalid + '%2F' + photoName + bigger + '?alt=media';
          
            // var url2 = 'https://iasbh.tmgrup.com.tr/aa940f/752/397/0/1/700/370?u=https://isbh.tmgrup.com.tr/sb/album/2019/01/09/mona-lisa-tablosunun-buyuk-sirri-cozuldu-iste-mona-lisanin-gizemi-1547019790330.jpg';
           
-            images.push({url: urlForBigger,freeHeight: true,type:type}) // Buraya type olarak type:ty.e ekle - // Video Componentinde sıkıbntı var ikinci defa oynatmıyor kağanınca açılımnca oluyor
+            images.push({url: urlForBigger,freeHeight: true})
               var tempArray = self.state.Posts;
               
             tempArray.push({message:message,photoName:urlForSize,senderid:senderid,timestamp:timestamp,type:type,readed:readed});
@@ -447,13 +295,10 @@ _getChannelPhotos = () =>
       translateXTabTwo,
       translateY
   } = this.state;
-
     return (
 <View style={{flex:1}}>
 <Modal visible={this.state.isModalOpened} presentationStyle={'fullScreen'} animationType='slide'  onRequestClose={async () => {this.setState({ isModalOpened: false }); await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);}}>
   
-
-  {this.state.nowShowing == 'photo' &&
    <ImageViewer
             imageUrls={images}
             index={this.state.currentImageIndex}
@@ -470,15 +315,8 @@ _getChannelPhotos = () =>
             enableSwipeDown={true}
    
           />
-        }
-      
-
 
 </Modal>
-
-
-
-
 <TouchableOpacity style={{width:60,height:60,borderRadius:60/2,position:'absolute',backgroundColor:'green',right:15,bottom:this.state.onay?45:110,zIndex:9999,justifyContent:'center',alignItems:'center'}} onPress={()=>this.props.navigation.navigate('ImageUpload',{kanalid:this.state.kanalid,displayname:this.state.displayname,desc:this.state.desc,PPUri:this.state.PPUri})}><Ionicons name={"ios-settings"} size={25} color={"#FFF"} icon/></TouchableOpacity>
 <ScrollView style={{marginTop:-60}}>
    
@@ -629,29 +467,12 @@ _getChannelPhotos = () =>
                             }
                         >
                                   <View style={{width:100 + '%'}}>
-                                 
                                               <FlatList
                                       data={this.state.Posts}
                                       extraData={this.state}
                                       renderItem={({ item,index }) => (
                                         <View style={{ flex: 1, flexDirection: 'column', margin: 1}}>
-                                            <TouchableOpacity onPress={() => {this.openModal(index)}}>
-                                            {item.type== 'photo' &&
-                                            <Image style={styles.imageThumbnail}   source={{ uri: item.photoName }} /> }
-                                         
-                                            {item.type== 'video' &&
-                                            <Video
-                                            source={{ uri: item.photoName }}
-                                                  rate={1.0}
-                                                  volume={1.0}
-                                                  isMuted={true}
-                                                  resizeMode="stretch"
-                                                  
-                                                  
-                                                  style={styles.imageThumbnail} 
-                                                />}
-
-                                              </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => {this.openModal(index)}}><Image style={styles.imageThumbnail}   source={{ uri: item.photoName }} /></TouchableOpacity>
                                         </View>
                                       )}
                                       //Setting the number of column
@@ -660,7 +481,7 @@ _getChannelPhotos = () =>
                                       />
                                   </View>
 
-                                        
+
                             <View style={{ marginTop: 20 }}>
                               
                             </View>
@@ -681,9 +502,14 @@ _getChannelPhotos = () =>
                             }}
                         >
                             <View style={{width:100+'%',backgroundColor:'red',minHeight:500,height:500}}>
-                            
-
-
+                            <GiftedChat
+                                    
+                                    messages={this.state.messages}
+                                    onSend={messages => this.onSend(messages)}
+                                    user={{
+                                        _id: 1,
+                                    }}
+                                    />
                                 </View>
                            
                         </Animated.View>

@@ -3,13 +3,13 @@ import '@firebase/firestore';
 
 // Initialize Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyD5x_BhDLypvc6q5E5GIGb39B0Qg36KsXA",
-  authDomain: "lebogram-4312a.firebaseapp.com",
-  databaseURL: "https://lebogram-4312a.firebaseio.com",
-  projectId: "lebogram-4312a",
-  storageBucket: "lebogram-4312a.appspot.com",
-  messagingSenderId: "274680399612",
-  appId: "1:274680399612:web:b3d330d796327d3c"
+  apiKey: "AIzaSyAZXN9IibT8cESSWrxz_GJC7Co8DtoNI60",
+    authDomain: "lebogram2.firebaseapp.com",
+    databaseURL: "https://lebogram2.firebaseio.com",
+    projectId: "lebogram2",
+    storageBucket: "lebogram2.appspot.com",
+    messagingSenderId: "10383902545",
+    appId: "1:10383902545:web:bb3a5b529dfc8972593570"
 };
 
 firebase.initializeApp(firebaseConfig);

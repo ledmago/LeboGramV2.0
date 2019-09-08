@@ -221,7 +221,7 @@ _bootstrapAsync = async () => {
                                   password:self.state.password,
                                   email:self.state.email,
                                   name:self.state.name,
-                                  profilephoto:'https://firebasestorage.googleapis.com/v0/b/lebogram-4312a.appspot.com/o/ppimage.png?alt=media&token=2a955ee5-684f-47f7-be86-055dcb51b885',
+                                  profilephoto:'https://firebasestorage.googleapis.com/v0/b/lebogram2.appspot.com/o/ppimage.png?alt=media&token=2a955ee5-684f-47f7-be86-055dcb51b885',
                                   newUser:true,
 
                                 }).then(function(){

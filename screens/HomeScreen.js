@@ -31,6 +31,7 @@ import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import ListItem, { Separator } from '../components/ListPostUser';
 import LoadingScreen from '../components/LoadingScreen';
+import { ScreenOrientation } from 'expo';
 import {
   Notifications,
 } from 'expo';
@@ -59,8 +60,8 @@ class HomeScreen extends React.Component {
         {
         
           const ref = firebase.storage().ref('profilephoto/' + global.userInfo.userUid + '/small');
-          try{const url = await ref.getDownloadURL(); global.userInfo.profilePhotoUri = url;} catch(error){global.userInfo.profilePhotoUri = 'https://firebasestorage.googleapis.com/v0/b/lebogram-4312a.appspot.com/o/ppimage.png?alt=media&token=2a955ee5-684f-47f7-be86-055dcb51b885';}
-        try{this.setState({PPUri:global.userInfo.profilePhotoUri})}catch(error){this.setState({PPUri:'https://firebasestorage.googleapis.com/v0/b/lebogram-4312a.appspot.com/o/ppimage.png?alt=media&token=2a955ee5-684f-47f7-be86-055dcb51b885'})}
+          try{const url = await ref.getDownloadURL(); global.userInfo.profilePhotoUri = url;} catch(error){global.userInfo.profilePhotoUri = 'https://firebasestorage.googleapis.com/v0/b/lebogram2.appspot.com/o/ppimage.png?alt=media&token=2a955ee5-684f-47f7-be86-055dcb51b885';}
+        try{this.setState({PPUri:global.userInfo.profilePhotoUri})}catch(error){this.setState({PPUri:'https://firebasestorage.googleapis.com/v0/b/lebogram2.appspot.com/o/ppimage.png?alt=media&token=2a955ee5-684f-47f7-be86-055dcb51b885'})}
         };
 
         
@@ -75,7 +76,7 @@ class HomeScreen extends React.Component {
     username:'',
     email:'',
     name:'',
-    PPUri : 'https://firebasestorage.googleapis.com/v0/b/lebogram-4312a.appspot.com/o/ppimage.png?alt=media&token=2a955ee5-684f-47f7-be86-055dcb51b885',
+    PPUri : 'https://firebasestorage.googleapis.com/v0/b/lebogram2.appspot.com/o/ppimage.png?alt=media&token=2a955ee5-684f-47f7-be86-055dcb51b885',
     isEverythingReady:false,
     tempItemQuota:[],
     ItemQuota:[],
@@ -208,11 +209,27 @@ sendNotificationImmediately = async (gonderen,adet) => {
 
   };
 
+  resimyukle = async() =>{
+
+    
+      
+      let promise = new Promise(async (res, rej) => {
+        await setTimeout(() => {
+          console.log('yüklendi 1')
+          res('abiii');
+         
+         }, 5000)
+   
+
+    })
+   
+
+ 
+ 
+    };
   // Load Channel List
   async componentDidMount(){
-    
- 
-
+  //  await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
     this.getPermissionAsync();
     LoadChannelList = async ()=> {
       this._getItemQuota();

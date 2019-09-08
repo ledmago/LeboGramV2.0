@@ -58,7 +58,7 @@ class LinksScreen extends React.Component {
     this.getPermissionAsync();
     if(this.state.imageUri.length < 2)
     {
-      this.setState({imageUri:'https://firebasestorage.googleapis.com/v0/b/lebogram-4312a.appspot.com/o/ppimage.png?alt=media&token=2a955ee5-684f-47f7-be86-055dcb51b885'});
+      this.setState({imageUri:'https://firebasestorage.googleapis.com/v0/b/lebogram2.appspot.com/o/ppimage.png?alt=media&token=2a955ee5-684f-47f7-be86-055dcb51b885'});
     }
   }
   getPermissionAsync = async () => {

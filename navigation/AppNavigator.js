@@ -17,6 +17,8 @@ import NewUserScreen from '../screens/newUser';
 import ChatScreen from '../screens/ChatScreen';
 import ImageUploadScreen from '../screens/ImageUploadScreen';
 import UserSearchScreen from '../screens/UserSearch';
+import Chat2Screen from '../screens/Chat2';
+import VideoScreen from '../screens/VideoScreen';
 
 const AppStack = createStackNavigator({ Home: HomeScreen, },);
 const AuthScreen = createStackNavigator({ Login: LoginScreen,LoginPw: LoginPwScreen,Register:RegisterScreen},{transitionConfig: () => fromRight(),});
@@ -49,7 +51,9 @@ export default createAppContainer(createSwitchNavigator(
                 ChatScreen:ChatScreen,
                 ImageUpload:ImageUploadScreen,
                 ProfileUpload:ProfileUploadScreen,
-                UserSearch:UserSearchScreen
+                UserSearch:UserSearchScreen,
+                Chat2:Chat2Screen,
+                VideoScreen:VideoScreen
   
               },
               {

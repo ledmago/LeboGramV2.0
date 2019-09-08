@@ -1,3 +1,4 @@
+// resim Veya Video Butonuna tuıklandığı zaman AlbumChanged() fonksyonunu çapırmadan direkt asyncgetPhotos() u çağırıyor
 /*This is an Example of Grid View in React Native*/
 import React, { Component } from 'react';
 //import rect in our project
@@ -48,7 +49,8 @@ export default class App extends Component {
       UploadingNowImgUri: null,
       selectedCountUploaded:0,
       UploadPercent:0,
-
+      selectedType:'Photos',
+      photosBos:false,
     };
     this.MaxSelectCount = 10
     
@@ -142,15 +144,16 @@ export default class App extends Component {
 
 
 
-  async _getPhotosAsync() {
+  async _getPhotosAsync(gelendeger ='Photos') {
     let photos = await CameraRoll.getPhotos({ 
-      first: 50000,
-    
+      first: 300,
+      assetType:gelendeger, //ImageUpload ekranındaki butonlardan gelen stateden gelen data
       ...Platform.select({
         ios: {groupTypes: 'All'},
       })
     
     })
+    console.log(photos)
     /*.then(
       (result) => {
           const groupNamesAr = result.map(
@@ -249,7 +252,7 @@ export default class App extends Component {
          
               if(data.node.isSelect == true)
               {
-              
+                data.node.image.type=data.node.type
                 selectedItems.push(data.node.image);
               
               }
@@ -280,49 +283,109 @@ export default class App extends Component {
             }
             // Crop the image. 
             try{
-                await ImageEditor.cropImage(data.uri, 
-                    cropData, async(successURI) => { 
-                      CroppedUri = successURI
-                                    
 
+            if(data.type == 'video/mp4' || data.type == 'video/m4a')
+            {
 
-              const response = await fetch(CroppedUri).catch((error)=>alert(error));
-              const blob = await response.blob();
-              const ImageName = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); // Random Name
-            
-              var ref = firebase.storage().ref().child('sendImages/' + this.state.kanalid + '/' + ImageName + '/small');
-            
-              ref.put(blob).then(async function(){
-                
-                self.setState({UploadingNowImgUri:data.uri}); // Ekranda Resmi Göster
-                const responseBig = await fetch(data.uri);
-                const blobBig = await responseBig.blob();
-                var  refBig = await firebase.storage().ref().child('sendImages/' + self.state.kanalid + '/' + ImageName + '/big').put(blobBig).on('state_changed',
-              async function progress(snapshot) {
-            
-                  this.percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                  self.setState({UploadPercent:this.percentage})
-                
+                                                                
+                                                                     const ImageName = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); // Random Name
+                                                                  
+                                                                      self.setState({UploadingNowImgUri:data.uri}); // Ekranda Resmi Göster
+                                                                      const responseBig = await fetch(data.uri);
+                                                                      const blobBig = await responseBig.blob();
+                                                                      var  refBig = await firebase.storage().ref().child('sendImages/' + self.state.kanalid + '/' + ImageName + '/big').put(blobBig).on('state_changed',
+                                                                    async function progress(snapshot) {
+                                                                  
+                                                                        this.percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                                                        self.setState({UploadPercent:this.percentage})
+                                                                      
 
-                  if(this.percentage >99)
-                  {
-                  
-                      // Yüklendini belirtmek için
-                  self.increaseProgressbar();
-                
+                                                                        if(this.percentage >99)
+                                                                        {
+                                                                        
+                                                                            // Yüklendini belirtmek için
+                                                                        self.increaseProgressbar();
+                                                                      
 
 
 
-                  var db = firebase.database();
-                  var date = new Date();
-                  
-                var ref = await db.ref('chatMessages/'+ self.state.kanalid).push({
-                  timestamp:date.getTime(),
-                  readed:false,
-                  type:'photo',
-                  message:'none',
-                  senderid:self.state.userToken,
-                  photoName:ImageName,
+                                                                        var db = firebase.database();
+                                                                        var date = new Date();
+                                                                        
+                                                                      var ref = await db.ref('chatMessages/'+ self.state.kanalid).push({
+                                                                        timestamp:date.getTime(),
+                                                                        readed:false,
+                                                                        type:'video',
+                                                                        message:'none',
+                                                                        senderid:self.state.userToken,
+                                                                        photoName:ImageName,
+
+                                                            }).then(()=>{     
+                                                                
+                                                            res();
+
+
+                                                            });
+                                                              
+                                                              }
+
+
+
+
+
+
+                                                            })
+                                                            
+
+
+                      
+
+            }
+
+             
+                          await ImageEditor.cropImage(data.uri, 
+                              cropData, async(successURI) => { 
+                                CroppedUri = successURI
+                                              
+
+
+                        const response = await fetch(CroppedUri).catch((error)=>alert(error));
+                        const blob = await response.blob();
+                        const ImageName = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); // Random Name
+                      
+                        var ref = firebase.storage().ref().child('sendImages/' + this.state.kanalid + '/' + ImageName + '/small');
+                      
+                        ref.put(blob).then(async function(){
+                          
+                          self.setState({UploadingNowImgUri:data.uri}); // Ekranda Resmi Göster
+                          const responseBig = await fetch(data.uri);
+                          const blobBig = await responseBig.blob();
+                          var  refBig = await firebase.storage().ref().child('sendImages/' + self.state.kanalid + '/' + ImageName + '/big').put(blobBig).on('state_changed',
+                        async function progress(snapshot) {
+                      
+                            this.percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            self.setState({UploadPercent:this.percentage})
+                          
+
+                            if(this.percentage >99)
+                            {
+                            
+                                // Yüklendini belirtmek için
+                            self.increaseProgressbar();
+                          
+
+
+
+                            var db = firebase.database();
+                            var date = new Date();
+                            
+                          var ref = await db.ref('chatMessages/'+ self.state.kanalid).push({
+                            timestamp:date.getTime(),
+                            readed:false,
+                            type:'photo',
+                            message:'none',
+                            senderid:self.state.userToken,
+                            photoName:ImageName,
 
                 }).then(()=>{     
                     
@@ -374,22 +437,23 @@ export default class App extends Component {
   }
 
 
-AlbumChanged = async(itemValue) => {
+AlbumChanged = async(itemValue,type = 'Photos') => {
+
 
   this.setState({selectedCount : 0});
   if(itemValue == null)
   {
-   this._getPhotosAsync();
+   this._getPhotosAsync(type);
   }
   else{
 
     if(itemValue.length > 0)
     {
    
-
+      let mediaType = type == 'Photos' ? MediaLibrary.MediaType.photo:MediaLibrary.MediaType.video;
       const media = await MediaLibrary.getAssetsAsync({
         first:50000,
-        mediaType: MediaLibrary.MediaType.photo,
+        mediaType: mediaType,
         SortBy:MediaLibrary.SortBy.creationTime,
         album:this.state.selectedPicker
     });
@@ -408,11 +472,15 @@ AlbumChanged = async(itemValue) => {
   
   
     
-    this.setState({ photos: tempArray });
+    this.setState({ photos: tempArray,photosBos:false });
     
+    }
+    else{
+      this.setState({photosBos:true})
     }
   }
  
+  
 }
 
 
@@ -494,7 +562,7 @@ selectItem = (data,gelenindex) => {
 placeholder={{label:'Hepsi',}}
 placeholderTextColor='#000'
 style={{color:'#000'}}
-      onValueChange={(value) => { this.setState({selectedPicker:value});this.AlbumChanged(value)}}
+      onValueChange={(value) => { this.setState({selectedPicker:value});this.AlbumChanged(value,this.state.selectedType)}}
       items={pickerItems}
     />
 <Text style={{position:'absolute',right:10,top:10,fontSize:18, width:130,height:30,justifyContent:'center',paddingTop:2,textAlign:'center',backgroundColor:'#6E6EE8',borderRadius:5,color:'#FFF'}}>{this.state.selectedCount} Seçilen</Text>
@@ -558,9 +626,14 @@ style={{color:'#000'}}
              
            }
        
+       <View style={{flexDirection:'row',width:100 + '%'}}>
+         <Button title='Resim' buttonStyle={{width:Dimensions.get('screen').width / 2,borderRadius:0,backgroundColor:this.state.selectedType=='Photos'?'#4388d6':'#6399d5'}} onPress={()=>{this.setState({selectedType:'Photos',photos:null});this.AlbumChanged(this.state.selectedPicker,'Photos')}} />
+         <Button title='Video' buttonStyle={{width:Dimensions.get('screen').width / 2,borderRadius:0,backgroundColor:this.state.selectedType=='Videos'?'#4388d6':'#6399d5'}} onPress={()=>{this.setState({selectedType:'Videos',photos:null});this.AlbumChanged(this.state.selectedPicker,'Videos')}} />
+         </View>
 
 
-
+           {this.state.photos == null && <ActivityIndicator size={50} style={{marginTop:20}}></ActivityIndicator>}
+           {this.state.photosBos &&< View><Ionicons name={"ios-list"} size={35} color={"#FFF"} /> <Text>Herhangi bir şey bulunamadı</Text></ View>}
         <FlatList
           data={this.state.photos}
           extraData={this.state}
@@ -570,8 +643,9 @@ style={{color:'#000'}}
            
              <Image style={styles.imageThumbnail} source={{ uri: item.node.image.uri}} />
              {item.node.isSelect && <View style={{width:100 + '%',height:100 + '%',backgroundColor:'blue',opacity:0.5,position:'absolute',left:0,top:0}}></View>}
-             {item.node.isSelect && <View style={{right:0,bottom:0,width:40,height:40,position:'absolute',alignItems:'center',justifyContent:'center'}}><Ionicons name={"ios-checkmark-circle"} size={36} color={"#FFF"} /></View>}
-            
+             {item.node.isSelect && <View style={{right:0,bottom:0,width:40,height:40,position:'absolute',alignItems:'center',justifyContent:'center'}}><Ionicons name={"ios-checkmark-circle"} size={35} color={"#FFF"} /></View>}
+             {item.node.type == 'video/mp4' &&  <View style={{right:2,top:0,width:35,height:35,position:'absolute',alignItems:'center',justifyContent:'center'}}><Ionicons name={"ios-videocam"} size={35} color={"#FFF"} /></View>}
+             {item.node.type == 'video' &&  <View style={{right:2,top:0,width:35,height:35,position:'absolute',alignItems:'center',justifyContent:'center'}}><Ionicons name={"ios-videocam"} size={36} color={"#FFF"} /></View>}
             </TouchableOpacity>
           )}
           //Setting the number of column
