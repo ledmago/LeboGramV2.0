@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Lebogram_firebase",
-    "slug": "lebogram_firebase",
+    "name": "LeboAppV2",
+    "slug": "leboappv2",
     "privacy": "public",
     "sdkVersion": "34.0.0",
     "platforms": [
@@ -26,6 +26,6 @@
     "ios": {
       "supportsTablet": true
     },
-    "description": ""
+    "description": "Lebogram Resim ve Video Paylaşım Uygulaması"
   }
 }

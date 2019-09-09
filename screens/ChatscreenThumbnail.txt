@@ -34,6 +34,8 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import { Image } from 'react-native-elements';
 import { ScreenOrientation } from 'expo';
 import { Video } from 'expo-av';
+import * as VideoThumbnails from 'expo-video-thumbnails';
+
 let images = []
 
 
@@ -275,7 +277,11 @@ _GetList = async() =>
 
 }
 
- // ---------------------------- 
+generateThumbnail = async (videoUrl) => {
+  
+}; 
+
+// ---------------------------- 
   componentDidMount() {
 
    
@@ -409,6 +415,22 @@ _getChannelPhotos = () =>
                  var urlForSize = 'https://firebasestorage.googleapis.com/v0/b/lebogram2.appspot.com/o/sendImages'+ '%2F' + this.state.kanalid + '%2F' + photoName + size + '?alt=media';
                   var urlForBigger = 'https://firebasestorage.googleapis.com/v0/b/lebogram2.appspot.com/o/sendImages'+ '%2F' + this.state.kanalid + '%2F' + photoName + bigger + '?alt=media';
          
+                  if(type=='video'){
+                    
+                    try {
+                      const { uri } = await VideoThumbnails.getThumbnailAsync(
+                        urlForSize,
+                        {
+                          time: 15000,
+                        }
+                      );
+                      urlForSize = uri;
+                     
+                    } catch (e) {
+                      console.warn(e);
+                    }
+                    
+                    
            // var url2 = 'https://iasbh.tmgrup.com.tr/aa940f/752/397/0/1/700/370?u=https://isbh.tmgrup.com.tr/sb/album/2019/01/09/mona-lisa-tablosunun-buyuk-sirri-cozuldu-iste-mona-lisanin-gizemi-1547019790330.jpg';
           
             images.push({url: urlForBigger,freeHeight: true,type:type}) // Buraya type olarak type:ty.e ekle - // Video Componentinde sıkıbntı var ikinci defa oynatmıyor kağanınca açılımnca oluyor
@@ -649,8 +671,7 @@ _getChannelPhotos = () =>
                                                   
                                                   
                                                   style={styles.imageThumbnail} 
-                                      />}
-
+                                                />}
 
                                               </TouchableOpacity>
                                         </View>

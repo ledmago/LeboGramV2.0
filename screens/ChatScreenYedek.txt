@@ -649,8 +649,7 @@ _getChannelPhotos = () =>
                                                   
                                                   
                                                   style={styles.imageThumbnail} 
-                                      />}
-
+                                                />}
 
                                               </TouchableOpacity>
                                         </View>
