@@ -92,3 +92,9 @@ There is a global variables that stores user log in,
       }
     }
 
+### ScreenShots
+![alt text](https://raw.githubusercontent.com/ledmago/LeboGramV2.0/master/ScreenShots/1.PNG)
+![alt text](https://raw.githubusercontent.com/ledmago/LeboGramV2.0/master/ScreenShots/2.PNG)
+![alt text](https://raw.githubusercontent.com/ledmago/LeboGramV2.0/master/ScreenShots/3.PNG)
+![alt text](https://raw.githubusercontent.com/ledmago/LeboGramV2.0/master/ScreenShots/4.PNG)
+![alt text](https://raw.githubusercontent.com/ledmago/LeboGramV2.0/master/ScreenShots/5.PNG)
