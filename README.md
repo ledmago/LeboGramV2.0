@@ -1,4 +1,7 @@
 # LeboGram (V2.0)
+**Türkçe
+Lebogram kişisel bilgileri paylaşmadan, mesaj, dosya, fotoğraf ve video gönderilebilen mobil uygulamadır.
+React Native ile birlikte Firebase cloud, Firebase Realtime Database ve storage kullanılmıştır.
 **Lebogram is the cross platform mobile application** that created through React Native framework.
 This application's aim is sending photos and videos (not ready for yet) to peoples without sharing personal information such as number or facebook account. 
 
