@@ -1,6 +1,12 @@
 # LeboGram (V2.0)
 **Türkçe
 Lebogram kişisel bilgileri paylaşmadan, mesaj, dosya, fotoğraf ve video gönderilebilen mobil uygulamadır.
+Kullanıcılar birbirlerini bulmak için bir çok farklı ve kolay yönetmler vardır.
+1- Qr kodunu okutarak mesaj gönderme
+2- Aynı Wifi deyse görebilme
+3- Konum bilgilerinden yakında ise görebilme
+4- Kullanıcı adını yazarak görebşlme.
+
 React Native ile birlikte Firebase cloud, Firebase Realtime Database ve storage kullanılmıştır.
 **Lebogram is the cross platform mobile application** that created through React Native framework.
 This application's aim is sending photos and videos (not ready for yet) to peoples without sharing personal information such as number or facebook account. 
