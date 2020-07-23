@@ -1,5 +1,5 @@
 # LeboGram (V2.0)
-**Türkçe
+**Türkçe :
 Lebogram kişisel bilgileri paylaşmadan, mesaj, dosya, fotoğraf ve video gönderilebilen mobil uygulamadır.
 Kullanıcılar birbirlerini bulmak için bir çok farklı ve kolay yönetmler vardır.
 1- Qr kodunu okutarak mesaj gönderme
